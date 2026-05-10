@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WASM y APIs - Presentación de Defensa</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0a0a1a;color:#e0e0f0;overflow:hidden;height:100vh}
+.slide{position:absolute;top:0;left:0;width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 80px;opacity:0;transform:translateX(100px);transition:all .6s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all}
+.slide.exit{opacity:0;transform:translateX(-100px)}
+
+/* Backgrounds */
+.bg-gradient{background:linear-gradient(135deg,#0a0a2e 0%,#1a0a3e 30%,#0a1a3e 70%,#0a0a2e 100%)}
+.bg-purple{background:linear-gradient(135deg,#1a0533 0%,#2d1b69 50%,#1a0533 100%)}
+.bg-blue{background:linear-gradient(135deg,#0a1628 0%,#1a2d5e 50%,#0a1628 100%)}
+.bg-dark{background:linear-gradient(135deg,#0d0d1a 0%,#161625 50%,#0d0d1a 100%)}
+.bg-teal{background:linear-gradient(135deg,#0a1a1a 0%,#0d3b3b 50%,#0a1a1a 100%)}
+
+h1{font-size:3.2rem;font-weight:800;background:linear-gradient(135deg,#7c3aed,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;line-height:1.2;margin-bottom:20px}
+h2{font-size:2rem;font-weight:700;color:#a78bfa;margin-bottom:30px;text-align:center}
+h3{font-size:1.3rem;font-weight:600;color:#06b6d4;margin:15px 0 8px}
+p,.content{font-size:1.05rem;line-height:1.7;color:#c4c4e0;max-width:900px;text-align:justify}
+.subtitle{font-size:1.3rem;color:#94a3b8;text-align:center;margin-bottom:30px}
+.badge{display:inline-block;background:linear-gradient(135deg,#7c3aed,#3b82f6);padding:6px 18px;border-radius:20px;font-size:.85rem;font-weight:600;color:#fff;margin-bottom:15px}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1000px;width:100%}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(124,58,237,.3);border-radius:16px;padding:24px;backdrop-filter:blur(10px);transition:transform .3s,border-color .3s}
+.card:hover{transform:translateY(-4px);border-color:#7c3aed}
+.card h3{margin-top:0}
+
+/* Table */
+table{border-collapse:collapse;max-width:950px;width:100%;margin:10px 0;font-size:.9rem}
+th{background:rgba(124,58,237,.3);color:#c4b5fd;padding:12px 16px;text-align:left;font-weight:600;border:1px solid rgba(124,58,237,.2)}
+td{padding:10px 16px;border:1px solid rgba(255,255,255,.08);color:#c4c4e0}
+tr:nth-child(even){background:rgba(255,255,255,.03)}
+
+/* Diagram */
+.diagram{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+.diagram .box{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(6,182,212,.2));border:1px solid rgba(124,58,237,.4);border-radius:12px;padding:14px 22px;font-weight:600;font-size:.95rem;color:#c4b5fd}
+.diagram .arrow{color:#7c3aed;font-size:1.5rem;font-weight:bold}
+
+/* Metrics */
+.metrics{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.metric{text-align:center;background:rgba(124,58,237,.1);border-radius:16px;padding:20px 30px;border:1px solid rgba(124,58,237,.2)}
+.metric .value{font-size:2.2rem;font-weight:800;background:linear-gradient(135deg,#7c3aed,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.metric .label{font-size:.85rem;color:#94a3b8;margin-top:5px}
+
+/* Nav */
+.nav{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);display:flex;gap:15px;z-index:100}
+.nav button{background:rgba(124,58,237,.3);border:1px solid rgba(124,58,237,.5);color:#c4b5fd;padding:10px 20px;border-radius:10px;cursor:pointer;font-family:'Inter';font-size:.9rem;font-weight:600;transition:all .3s}
+.nav button:hover{background:rgba(124,58,237,.6);color:#fff}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#7c3aed,#06b6d4);transition:width .4s;z-index:100}
+.counter{position:fixed;bottom:35px;right:40px;color:#666;font-size:.85rem;z-index:100}
+
+/* Lists */
+ul{text-align:left;max-width:800px;list-style:none}
+ul li{padding:8px 0;padding-left:25px;position:relative;color:#c4c4e0;font-size:1rem}
+ul li::before{content:"▸";position:absolute;left:0;color:#7c3aed;font-weight:bold}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:950px;width:100%}
+.highlight{color:#06b6d4;font-weight:600}
+.warn{color:#f59e0b;font-weight:600}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<!-- Slide 1: Portada -->
+<div class="slide bg-gradient active" id="s1">
+<span class="badge">Tópico 15</span>
+<h1>Mecanismos que Interactúan en WASM y su Importancia en Tiempo de Respuesta de las API</h1>
+<p class="subtitle">Lenguajes y Compiladores — UNEG — Mayo 2026</p>
+<p class="subtitle" style="font-size:.95rem;color:#666">Grupo: [NOMBRE DEL GRUPO] | [ESLOGAN]</p>
+</div>
+
+<!-- Slide 2: ¿Qué es WASM? -->
+<div class="slide bg-purple" id="s2">
+<h2>¿Qué es WebAssembly?</h2>
+<div class="cards">
+<div class="card">
+<h3>📦 Formato Binario</h3>
+<p>Estándar abierto del W3C que define un formato de instrucción binaria portátil para una máquina virtual basada en pila.</p>
+</div>
+<div class="card">
+<h3>🚀 Rendimiento Nativo</h3>
+<p>Permite ejecutar código C++, Rust, Go y otros lenguajes en el navegador y servidores a velocidades cercanas al nativo.</p>
+</div>
+<div class="card">
+<h3>🔒 Seguro por Diseño</h3>
+<p>Se ejecuta en un sandbox aislado sin acceso directo al sistema operativo, red ni sistema de archivos.</p>
+</div>
+<div class="card">
+<h3>🌐 Universal</h3>
+<p>Funciona en todos los navegadores principales, servidores (Node.js, Deno), edge computing y dispositivos IoT.</p>
+</div>
+</div>
+</div>
+
+<!-- Slide 3: Mecanismos Internos -->
+<div class="slide bg-blue" id="s3">
+<h2>Mecanismos Internos de WASM</h2>
+<div class="two-col">
+<div>
+<h3>Stack Machine (Máquina de Pila)</h3>
+<p>Las instrucciones operan sobre una pila: extraen operandos (pop), ejecutan la operación y depositan el resultado (push). Diseño compacto y eficiente.</p>
+<h3>Memoria Lineal</h3>
+<p>Bloque contiguo de bytes con acceso directo por offsets. Sin garbage collector — control total de memoria.</p>
+</div>
+<div>
+<h3>Módulos</h3>
+<p>Unidad de despliegue (.wasm). Autocontenido con funciones, memoria, tablas. Import/Export de funciones del host.</p>
+<h3>Tablas de Funciones</h3>
+<p>Almacenan referencias tipadas para llamadas indirectas seguras (call_indirect). Esencial para vtables y callbacks.</p>
+</div>
+</div>
+</div>
+
+<!-- Slide 4: Pipeline de Compilación -->
+<div class="slide bg-dark" id="s4">
+<h2>Pipeline de Compilación y Ejecución</h2>
+<div class="diagram">
+<div class="box">C++ / Rust / Go</div>
+<div class="arrow">→</div>
+<div class="box">Compilador (LLVM)</div>
+<div class="arrow">→</div>
+<div class="box">.wasm (Binario)</div>
+<div class="arrow">→</div>
+<div class="box">Validación</div>
+<div class="arrow">→</div>
+<div class="box">AOT / JIT</div>
+<div class="arrow">→</div>
+<div class="box">Código Nativo</div>
+</div>
+<div class="cards" style="margin-top:25px">
+<div class="card">
+<h3>AOT (Ahead-of-Time)</h3>
+<p>Compila a código máquina antes de la ejecución. Elimina latencia de compilación. Ideal para servidores.</p>
+</div>
+<div class="card">
+<h3>JIT (Just-in-Time)</h3>
+<p>Compila durante ejecución con optimizaciones en caliente. V8 usa Liftoff (rápido) + TurboFan (optimizado).</p>
+</div>
+</div>
+</div>
+
+<!-- Slide 5: WASM ↔ APIs -->
+<div class="slide bg-teal" id="s5">
+<h2>WASM ↔ APIs: Mecanismos de Interacción</h2>
+<div class="cards">
+<div class="card">
+<h3>🔗 Puente JS-WASM</h3>
+<p>Funciones exportadas/importadas entre módulos WASM y JavaScript. Costo: <span class="highlight">2-5μs por llamada</span>.</p>
+</div>
+<div class="card">
+<h3>⚙️ WASI</h3>
+<p>WebAssembly System Interface. Acceso seguro a recursos OS. WASI 0.2: Component Model. WASI 0.3: I/O asíncrono.</p>
+</div>
+<div class="card">
+<h3>🧩 Component Model</h3>
+<p>Interfaces tipadas (WIT) entre componentes multi-lenguaje. Elimina serialización JSON costosa.</p>
+</div>
+<div class="card">
+<h3>📐 SIMD 128-bit</h3>
+<p>Procesamiento paralelo de datos. Hasta <span class="highlight">6x mejora adicional</span> en operaciones vectorizables.</p>
+</div>
+</div>
+</div>
+
+<!-- Slide 6: Benchmarks -->
+<div class="slide bg-purple" id="s6">
+<h2>Impacto en Tiempos de Respuesta</h2>
+<div class="metrics">
+<div class="metric"><div class="value">5x-20x</div><div class="label">Más rápido que JS<br>(tareas computacionales)</div></div>
+<div class="metric"><div class="value">&lt; 1ms</div><div class="label">Cold Start<br>(AOT precompilado)</div></div>
+<div class="metric"><div class="value">&lt; 10ms</div><div class="label">Latencia API<br>(Edge Computing)</div></div>
+<div class="metric"><div class="value">100x</div><div class="label">Arranque más rápido<br>vs Contenedores</div></div>
+</div>
+<ul style="margin-top:20px">
+<li><span class="highlight">WASM gana</span> en: criptografía, procesamiento multimedia, ML inference, cálculos matemáticos</li>
+<li><span class="warn">JS gana</span> en: manipulación DOM, operaciones I/O, CRUD estándar, llamadas de red</li>
+<li>Modelo óptimo: <span class="highlight">JS orquesta</span> + <span class="highlight">WASM procesa</span></li>
+</ul>
+</div>
+
+<!-- Slide 7: Comparativa -->
+<div class="slide bg-dark" id="s7">
+<h2>Análisis Comparativo</h2>
+<table>
+<tr><th>Característica</th><th>WASM</th><th>JavaScript</th><th>Contenedores</th></tr>
+<tr><td>Velocidad ejecución</td><td class="highlight">Cercana a nativa</td><td>JIT, variable</td><td>Nativa (OS)</td></tr>
+<tr><td>Cold Start</td><td class="highlight">&lt; 50ms</td><td>Instantáneo</td><td class="warn">100ms - 5s</td></tr>
+<tr><td>Tamaño binario</td><td>KB - pocos MB</td><td class="highlight">KB (texto)</td><td class="warn">50MB - 500MB+</td></tr>
+<tr><td>Seguridad</td><td class="highlight">Sandbox estricto</td><td>Sandbox del motor</td><td>Aislamiento OS</td></tr>
+<tr><td>Acceso I/O</td><td>Via WASI/host</td><td class="highlight">Nativo</td><td class="highlight">Completo</td></tr>
+<tr><td>Portabilidad</td><td class="highlight">Universal</td><td>Motor JS</td><td>Por arquitectura</td></tr>
+<tr><td>Mejor para APIs</td><td class="highlight">Cómputo intensivo</td><td>I/O, CRUD, DOM</td><td>Servicios completos</td></tr>
+</table>
+</div>
+
+<!-- Slide 8: Casos de Uso -->
+<div class="slide bg-blue" id="s8">
+<h2>Casos de Uso Reales</h2>
+<div class="cards">
+<div class="card">
+<h3>🎨 Figma</h3>
+<p>Motor de renderizado C++ compilado a WASM. Diseño colaborativo a 60fps en el navegador.</p>
+</div>
+<div class="card">
+<h3>🌍 Google Earth</h3>
+<p>Codebase C++ migrado a WASM. Visualización 3D con streaming masivo en tiempo real.</p>
+</div>
+<div class="card">
+<h3>🛒 Shopify Functions</h3>
+<p>Lógica de backend (descuentos, checkout) en Rust/WASM con latencia mínima y sandbox.</p>
+</div>
+<div class="card">
+<h3>☁️ Fermyon + Akamai</h3>
+<p>APIs serverless en edge global. Tiempos de respuesta sub-10ms con densidad masiva.</p>
+</div>
+</div>
+</div>
+
+<!-- Slide 9: Edge & Serverless -->
+<div class="slide bg-teal" id="s9">
+<h2>WASM en Edge Computing y Serverless</h2>
+<div class="two-col">
+<div>
+<h3>Runtimes de Servidor</h3>
+<ul>
+<li><span class="highlight">Wasmtime</span> — Referencia, Bytecode Alliance</li>
+<li><span class="highlight">Wasmer</span> — Universal, backends LLVM</li>
+<li><span class="highlight">WasmEdge</span> — Edge y AI inference</li>
+<li><span class="highlight">Fermyon Spin</span> — Framework serverless</li>
+</ul>
+<h3 style="margin-top:20px">SpinKube (CNCF)</h3>
+<p>WASM dentro de Kubernetes. Pods WASM: 10x menos memoria, 100x arranque más rápido.</p>
+</div>
+<div>
+<h3>Ventajas sobre Contenedores</h3>
+<ul>
+<li>Arranque en microsegundos vs segundos</li>
+<li>Huella de memoria: KB vs cientos de MB</li>
+<li>Sandbox sin virtualización pesada</li>
+<li>Densidad de carga: miles de funciones por nodo</li>
+</ul>
+<h3 style="margin-top:20px">Edge AI</h3>
+<p>Inferencia de modelos compilados a WASM cerca del usuario. Elimina latencia de data centers.</p>
+</div>
+</div>
+</div>
+
+<!-- Slide 10: Conclusiones -->
+<div class="slide bg-gradient" id="s10">
+<h2>Conclusiones</h2>
+<ul>
+<li>WASM ofrece <span class="highlight">5x-20x mejora</span> en procesamiento computacional dentro de APIs</li>
+<li>Los mecanismos internos (stack machine, memoria lineal, sandbox) son la base de su rendimiento y seguridad</li>
+<li>WASI y el Component Model extienden WASM al servidor con interoperabilidad multi-lenguaje</li>
+<li>En edge computing, WASM logra <span class="highlight">latencias sub-10ms</span> con cold starts casi inexistentes</li>
+<li>El modelo óptimo es <span class="highlight">híbrido</span>: JS orquesta, WASM procesa lo intensivo</li>
+<li>Empresas líderes (Figma, Google, Shopify) ya usan WASM en producción</li>
+<li>Con WasmGC, SIMD y WASI 0.3, el impacto de WASM seguirá creciendo</li>
+</ul>
+</div>
+
+<!-- Slide 11: Referencias -->
+<div class="slide bg-dark" id="s11">
+<h2>Referencias</h2>
+<ul style="font-size:.85rem;max-height:65vh;overflow-y:auto">
+<li>Bytecode Alliance. (2024). Wasmtime: A fast and secure runtime for WebAssembly.</li>
+<li>Bytecode Alliance. (2025). WASI: The WebAssembly System Interface.</li>
+<li>CNCF. (2025). SpinKube: Running WebAssembly workloads in Kubernetes.</li>
+<li>Fermyon. (2025). Spin: Building WebAssembly microservices.</li>
+<li>Figma Engineering. (2023). Building a high-performance design tool with WebAssembly.</li>
+<li>Google. (2024). Google Earth and WebAssembly: Bringing 3D to the browser.</li>
+<li>Haas et al. (2017). Bringing the web up to speed with WebAssembly. ACM SIGPLAN.</li>
+<li>Mozilla Developer Network. (2024). WebAssembly concepts.</li>
+<li>Shopify Engineering. (2024). Shopify Functions: Extending commerce with WASM.</li>
+<li>W3C. (2025). WebAssembly Specification 3.0.</li>
+<li>WebAssembly.org. (2024). WebAssembly overview.</li>
+</ul>
+<p style="margin-top:20px;text-align:center;color:#666">¡Gracias por su atención!</p>
+</div>
+
+<div class="nav">
+<button onclick="prev()">← Anterior</button>
+<button onclick="next()">Siguiente →</button>
+</div>
+<div class="counter" id="counter">1 / 11</div>
+
+<script>
+let current=0;const total=11;
+function show(n){
+  document.querySelectorAll('.slide').forEach((s,i)=>{
+    s.classList.remove('active','exit');
+    if(i===n)s.classList.add('active');
+    else if(i<n)s.classList.add('exit');
+  });
+  document.getElementById('counter').textContent=`${n+1} / ${total}`;
+  document.getElementById('progress').style.width=`${((n+1)/total)*100}%`;
+}
+function next(){if(current<total-1){current++;show(current)}}
+function prev(){if(current>0){current--;show(current)}}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ')next();
+  if(e.key==='ArrowLeft')prev();
+});
+</script>
+</body>
+</html>
