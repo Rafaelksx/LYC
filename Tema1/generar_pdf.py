@@ -1,6 +1,9 @@
 """Generador del informe PDF - Mecanismos WASM y APIs."""
+import os
 from fpdf import FPDF
 from contenido import SECCIONES, REFERENCIAS
+
+LOGO_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uneg-logo.png")
 
 class InformeWASM(FPDF):
     def header(self):
@@ -16,37 +19,67 @@ class InformeWASM(FPDF):
 
     def portada(self):
         self.add_page()
-        self.ln(30)
-        self.set_font("Helvetica", "B", 14)
-        self.cell(0, 10, "UNIVERSIDAD NACIONAL EXPERIMENTAL DE GUAYANA", align="C", new_x="LMARGIN", new_y="NEXT")
-        self.set_font("Helvetica", "", 12)
-        self.cell(0, 8, "Vicerrectorado Académico", align="C", new_x="LMARGIN", new_y="NEXT")
-        self.cell(0, 8, "Coordinación General de Pregrado", align="C", new_x="LMARGIN", new_y="NEXT")
-        self.cell(0, 8, "Ingeniería en Informática", align="C", new_x="LMARGIN", new_y="NEXT")
-        self.cell(0, 8, "Lenguajes y Compiladores", align="C", new_x="LMARGIN", new_y="NEXT")
-        self.ln(25)
-        self.set_font("Helvetica", "B", 16)
-        self.multi_cell(0, 10, "MECANISMOS QUE INTERACTÚAN EN WASM\nY SU IMPORTANCIA EN TIEMPO DE\nRESPUESTA DE LAS API", align="C")
-        self.ln(15)
-        self.set_font("Helvetica", "B", 12)
-        self.cell(0, 8, "Tópico 15", align="C", new_x="LMARGIN", new_y="NEXT")
-        self.ln(20)
+        # Logo UNEG centrado (más compacto)
+        logo_w = 30
+        x_logo = (self.w - logo_w) / 2
+        self.image(LOGO_PATH, x=x_logo, y=12, w=logo_w)
+        self.ln(35)
+        # Universidad - SIN negrita
+        self.set_font("Helvetica", "", 13)
+        self.cell(0, 8, "UNIVERSIDAD NACIONAL EXPERIMENTAL DE GUAYANA", align="C", new_x="LMARGIN", new_y="NEXT")
         self.set_font("Helvetica", "", 11)
-        self.cell(0, 8, "Grupo: [NOMBRE DEL GRUPO]", align="C", new_x="LMARGIN", new_y="NEXT")
-        self.cell(0, 8, "Eslogan: [ESLOGAN DEL EQUIPO]", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 7, "Vicerrectorado Académico", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 7, "Coordinación General de Pregrado", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 7, "Ingeniería en Informática", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 7, "Lenguajes y Compiladores", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.ln(15)
+        # Título del tópico
+        self.set_font("Helvetica", "B", 15)
+        self.multi_cell(0, 9, "MECANISMOS QUE INTERACTÚAN EN WASM\nY SU IMPORTANCIA EN TIEMPO DE\nRESPUESTA DE LAS API", align="C")
         self.ln(8)
         self.set_font("Helvetica", "B", 11)
-        self.cell(0, 8, "Integrantes:", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 7, "Tópico 15", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.ln(10)
+        # Grupo y eslogan
         self.set_font("Helvetica", "", 10)
-        for i in range(1, 5):
-            self.cell(0, 7, f"[NOMBRE INTEGRANTE {i}] - C.I.: [CÉDULA {i}] - Sección: [SECCIÓN {i}]", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 7, "Grupo: Compiladores CLRR", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 7, "Eslogan: Los que mas compilan", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.ln(8)
+        # Profesor a la IZQUIERDA e Integrantes a la DERECHA
+        col_w = (self.w - 50) / 2  # ancho de cada columna
+        y_start = self.get_y()
+        # Columna izquierda: Profesor
+        self.set_font("Helvetica", "B", 10)
+        self.cell(col_w, 7, "Profesor:", new_x="LMARGIN", new_y="NEXT")
+        self.set_font("Helvetica", "", 10)
+        self.cell(col_w, 6, "Félix Márquez", new_x="LMARGIN", new_y="NEXT")
+        y_after_prof = self.get_y()
+        # Columna derecha: Integrantes
+        self.set_y(y_start)
+        self.set_x(25 + col_w + 10)
+        self.set_font("Helvetica", "B", 10)
+        self.cell(col_w, 7, "Integrantes:", new_x="LMARGIN", new_y="NEXT")
+        self.set_font("Helvetica", "", 9)
+        integrantes = [
+            "Rafael Rodriguez - C.I.: 31882367 - Sec. 1",
+            "Adrian Reina - C.I.: 31317970 - Sec. 1",
+            "Fernando Centeno - C.I.: 31810484 - Sec. 1",
+            "Juan Longart - C.I.: 31882343 - Sec. 1",
+        ]
+        for nombre in integrantes:
+            self.set_x(25 + col_w + 10)
+            self.cell(col_w, 6, nombre, new_x="LMARGIN", new_y="NEXT")
+        y_after_int = self.get_y()
+        # Mover al punto más bajo de ambas columnas
+        self.set_y(max(y_after_prof, y_after_int))
         self.ln(15)
+        # Ciudad y fecha centrados abajo
         self.set_font("Helvetica", "", 11)
-        self.cell(0, 8, "Profesor(a): [NOMBRE DEL PROFESOR]", align="C", new_x="LMARGIN", new_y="NEXT")
         self.cell(0, 8, "Ciudad Guayana, Mayo 2026", align="C", new_x="LMARGIN", new_y="NEXT")
 
     def indice(self):
         self.add_page()
+        self.start_section("Índice")
         self.set_font("Helvetica", "B", 14)
         self.cell(0, 10, "ÍNDICE", align="C", new_x="LMARGIN", new_y="NEXT")
         self.ln(8)
@@ -65,12 +98,16 @@ class InformeWASM(FPDF):
     def titulo_seccion(self, texto):
         self.ln(5)
         self.set_font("Helvetica", "B", 13)
+        # Agregar bookmark/marcador clicable en el PDF
+        self.start_section(texto)
         self.cell(0, 10, texto, new_x="LMARGIN", new_y="NEXT")
         self.ln(2)
 
     def subtitulo(self, texto):
         self.ln(3)
         self.set_font("Helvetica", "B", 11)
+        # Agregar sub-bookmark
+        self.start_section(texto, level=1)
         self.cell(0, 8, texto, new_x="LMARGIN", new_y="NEXT")
         self.ln(1)
 
