@@ -24,7 +24,7 @@ Tema1/
 ```
 
 ## Video de Defensa
-**YouTube:** [ENLACE AL VIDEO]
+**YouTube:** [https://youtu.be/Tl52EXn8XT0]
 
 ## Resumen del Tópico
 WebAssembly (WASM) es un estándar del W3C que define un formato de instrucción binaria para máquinas virtuales basadas en pila. Este informe analiza los mecanismos internos de WASM (stack machine, memoria lineal, tablas, compilación AOT/JIT, sandboxing) y su impacto directo en los tiempos de respuesta de las APIs modernas, incluyendo benchmarks, casos de uso reales (Figma, Google Earth, Shopify) y aplicaciones en edge computing y serverless.
