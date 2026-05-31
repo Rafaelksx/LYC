@@ -171,7 +171,20 @@ def generate_pdf(results_data=None):
     add_subsection_header(pdf, "3.2. Análisis Sintáctico de Estructuras de Control")
     add_paragraph(pdf, "El análisis sintáctico valida la estructura gramatical del código. En Python, la estructura condicional se define mediante bloques indentados (if/elif/else). En JavaScript, Rust y Zig se emplean paréntesis para las condiciones y llaves para los bloques. Rust y Zig incorporan expresiones de control de flujo donde las estructuras condicionales y de coincidencia (match) pueden retornar valores directamente.")
     
-    add_subsection_header(pdf, "3.3. Resultados del Benchmarking (Algoritmo de Collatz)")
+    # New page for architectures to keep it organized
+    pdf.add_page()
+    add_subsection_header(pdf, "3.3. Arquitectura y Modelos de Ejecución Detallados por Lenguaje")
+    
+    add_bullet_point(pdf, "Zig (Modelo de Memoria y Comptime)", "Control de memoria explícito obligando a pasar alocadores (GeneralPurposeAllocator, ArenaAllocator) para evitar alocaciones ocultas. El compilador LLVM procesa la metaprogramación estática con 'comptime' en tiempo de compilación. Errores tratados como valores explícitos en uniones.")
+    
+    add_bullet_point(pdf, "Rust (Borrow Checker y Propiedad)", "Seguridad de memoria estática garantizada en compilación por el Borrow Checker mediante Ownership, Borrowing y Lifetimes sin Garbage Collector. Distingue entre bloques seguros y bloques 'unsafe' para accesos de bajo nivel. Compila a MIR y luego a LLVM IR.")
+    
+    add_bullet_point(pdf, "Python (Máquina Virtual y GIL)", "CPython compila a bytecode (.pyc) y lo ejecuta en una VM de pila. La estructura genérica PyObject añade sobrecarga por tipado dinámico. Gestión de memoria por conteo de referencias y Garbage Collector generacional cíclico. El cerrojo GIL impide la ejecución multihilo paralela en CPU.")
+    
+    add_bullet_point(pdf, "JavaScript (Compilación JIT y Event Loop)", "V8 utiliza una infraestructura JIT de dos etapas: Ignition (intérprete) y TurboFan (compilador JIT de código nativo optimizado con des-optimización dinámica). Memoria por recolector generacional (Scavenger + Mark-Sweep-Compact). Event Loop asíncrono con libuv sobre un único hilo nativo de JS.")
+    
+    pdf.ln(2)
+    add_subsection_header(pdf, "3.4. Resultados del Benchmarking (Algoritmo de Collatz)")
     add_paragraph(pdf, "Para evaluar el rendimiento empírico de estos lenguajes, se implementó el cálculo iterativo de la conjetura de Collatz para todos los números desde 1 hasta N. A continuación se presentan los resultados obtenidos en el hardware local:")
 
     # Table header

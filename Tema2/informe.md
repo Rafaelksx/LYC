@@ -96,15 +96,41 @@ El análisis sintáctico valida el orden y la jerarquía de las instrucciones se
 *   **Python:** La sintaxis está dictada por dos puntos `:` y bloques indentados. No se requieren paréntesis en las condiciones (ej. `if x > 5:`). Las funciones se declaran con `def`.
 *   **JavaScript:** La sintaxis es de estilo C. Las condiciones requieren paréntesis `if (x > 5) {}` y los bloques se delimitan con llaves. Las iteraciones soportan `for`, `while` y `do-while`.
 *   **Rust:** Combina estilo de llaves sin requerir paréntesis en las condiciones (`if x > 5 {}`). Su análisis sintáctico es altamente robusto y trata casi todas las estructuras de control como **expresiones** que retornan valores (ej. `let result = if x > 5 { 10 } else { 20 };`). El emparejamiento con `match` es exhaustivo (el compilador valida sintácticamente que se cubran todos los casos).
-*   **Zig:** Sigue el enfoque de Rust en la ausencia de paréntesis en las condiciones (`if (x > 5) {}` - Zig sí requiere paréntesis para condiciones de `if`/`while`). Al igual que Rust, las estructuras como `if` y `switch` actúan como expresiones.
+*   **Zig:** Sigue el enfoque de Rust en la ausencia de paréntesis en las condiciones de bloque (`if (x > 5) {}` - Zig sí requiere paréntesis para condiciones de `if` y `while`). Al igual que Rust, las estructuras como `if` y `switch` actúan como expresiones.
+
+### 3.3. Arquitectura y Modelos de Ejecución Detallados por Lenguaje
+
+Para comprender en su totalidad el comportamiento de estos lenguajes frente al compilador y en el entorno operativo, es necesario analizar de manera exhaustiva sus modelos de memoria y ciclos de ejecución:
+
+#### 3.3.1. Zig: Control de Memoria Explícito y Metaprogramación Estática
+*   **Modelo de Memoria:** Zig elimina la asignación dinámica de memoria implícita u oculta. No posee recolector de basura ni un asignador global automático por defecto. En su lugar, el modelo impone que las funciones que requieran memoria dinámica acepten un objeto alocador (`std.mem.Allocator`) de manera explícita como parámetro. Esto permite alternar dinámicamente entre diferentes estrategias (como `GeneralPurposeAllocator` para desarrollo con detección de fugas, o `ArenaAllocator` para agrupar liberaciones de memoria en bloque).
+*   **Compilación y Metaprogramación (`comptime`):** La metaprogramación en Zig se realiza en tiempo de compilación utilizando el modificador `comptime`. A diferencia de C++ (plantillas complejas) o Rust (macros procedimentales), en Zig se utiliza el propio lenguaje para ejecutar lógica y generar tipos antes de emitir el código de máquina definitivo. Su compilador utiliza el backend de LLVM para optimizar el código resultante, emitiendo binarios nativos de mínima huella.
+*   **Manejo de Errores:** No implementa excepciones. Los errores en Zig son valores de un tipo enumerado especial que se combinan mediante un tipo unión (`!T`). Esto fuerza al compilador a validar que todas las rutas de error sean gestionadas explícitamente, facilitando un flujo de control determinista y libre de saltos de pila inesperados.
+
+#### 3.3.2. Rust: Seguridad en Compilación sin Recolector de Basura
+*   **Modelo de Memoria (Borrow Checker):** Rust no tiene recolector de basura ni exige gestión de memoria manual en tiempo de ejecución. En su lugar, implementa un modelo de **Propiedad (Ownership)**, **Préstamo (Borrowing)** y **Tiempos de Vida (Lifetimes)** administrado en tiempo de compilación por el *Borrow Checker*. Este componente analiza el código y garantiza que solo haya un único propietario para cada recurso de memoria en el montículo en un momento dado, insertando las llamadas de liberación (`drop`) de forma automática y estática cuando la variable sale de su ámbito (RAII). Evita accesos a memoria nula, punteros colgantes (*dangling pointers*) y desbordamientos.
+*   **Safe vs. Unsafe Rust:** El lenguaje se divide estrictamente entre código seguro (donde el compilador garantiza la ausencia de fallos de memoria) y bloques `unsafe` (donde el desarrollador asume la responsabilidad de manejar punteros crudos e interactuar con hardware o APIs externas de bajo nivel, desactivando temporalmente ciertas reglas del *Borrow Checker*).
+*   **Compilación:** El código Rust se compila a una Representación Intermedia de Nivel Medio (MIR) específica de Rust, luego a Representación Intermedia de LLVM (LLVM IR) y finalmente a código de máquina altamente optimizado.
+
+#### 3.3.3. Python (CPython): Máquina Virtual de Pila y el Global Interpreter Lock
+*   **Modelo de Ejecución (VM de CPython):** El código fuente de Python se compila a bytecode de forma transparente. Este bytecode (almacenado en archivos `.pyc`) es interpretado secuencialmente por una máquina virtual basada en pila (CPython). Al ser un lenguaje de tipado dinámico puro, cada variable es un puntero a una estructura genérica de C llamada `PyObject`, la cual añade metadatos (como contadores de referencias y tablas de tipos), lo que genera una enorme sobrecarga de memoria y ciclos de CPU.
+*   **Gestión de Memoria y Recolector de Basura:** Combina un mecanismo principal de **conteo de referencias** (que libera la memoria de un objeto inmediatamente cuando su contador llega a cero) con un **recolector de basura generacional** cíclico que corre en segundo plano para identificar y destruir ciclos de referencia (por ejemplo, dos objetos que se apuntan mutuamente pero ya no son accesibles desde el programa).
+*   **Global Interpreter Lock (GIL):** Es un cerrojo a nivel de la máquina virtual que impide que múltiples hilos nativos ejecuten bytecodes de Python simultáneamente. Esto simplifica la integración de librerías en C y la gestión de memoria interna, pero bloquea el paralelismo real en tareas de cómputo intensivo intensivo (CPU-bound) en procesadores multinúcleo, obligando al uso de multiprocesamiento.
+
+#### 3.3.4. JavaScript (V8 Engine): Compilación JIT de Doble Etapa y Concurrencia por Eventos
+*   **Arquitectura de Compilación del Motor V8:** Node.js utiliza el motor V8, el cual prescinde de la interpretación pura. Implementa una infraestructura JIT de dos etapas:
+    1.  **Ignition:** Un intérprete y generador de bytecode que traduce rápidamente el código fuente y lo ejecuta para un inicio veloz del programa.
+    2.  **TurboFan:** Un compilador optimizador JIT. A medida que el programa corre, recopila información de tipos (retroalimentación de perfilado). Si una función es identificada como "caliente" (ejecutada muchas veces), TurboFan la compila a código de máquina nativo altamente optimizado. Si la suposición de tipos falla después (debido a la naturaleza dinámica de JS), V8 realiza una des-optimización hacia el bytecode de Ignition.
+*   **Gestión de Memoria:** Utiliza un recolector de basura generacional automático. La memoria se divide en la generación joven (*New Space*, donde los objetos de vida corta se limpian rápidamente mediante un algoritmo *Scavenger*) y la generación vieja (*Old Space*, donde los objetos persistentes se limpian con algoritmos más pesados de *Mark-Sweep-Compact*).
+*   **Modelo de Concurrencia (Event Loop y libuv):** JavaScript es monohilo. La concurrencia asíncrona no bloqueante se gestiona a través del bucle de eventos (*Event Loop*) soportado por la biblioteca nativa `libuv` escrita en C. Este modelo separa las operaciones de entrada/salida (I/O) en un hilo auxiliar (ThreadPool) y procesa los resultados mediante una cola de microtareas (ej. Promesas) y macrotareas (ej. temporizadores o eventos I/O) en el hilo principal de JS, permitiendo atender miles de peticiones concurrentes sin el coste de la creación de hilos de sistema operativo.
 
 ---
 
-## 4. Resultados del Benchmarking (Algoritmo de Collatz)
+### 3.4. Resultados del Benchmarking (Algoritmo de Collatz)
 
 Para evaluar el impacto de las tecnologías de compilación y ejecución, se diseñó un algoritmo intensivo en cómputo que calcula la longitud de la secuencia de la Conjetura de Collatz para cada número entero desde $1$ hasta $N = 2,000,000$.
 
-### 4.1. Tabla Comparativa de Rendimiento
+#### 3.4.1. Tabla Comparativa de Rendimiento
 A continuación, se tabulan los resultados de la prueba empírica realizada en el hardware local:
 
 | Lenguaje de Programación | Paradigma Dominante | Mecanismo de Ejecución | Tiempo Promedio (ms) | Consumo de Memoria Pico (MB) | Velocidad Relativa (vs Python) |
@@ -116,7 +142,7 @@ A continuación, se tabulan los resultados de la prueba empírica realizada en e
 
 *(Nota: Los valores numéricos exactos se actualizan dinámicamente mediante el script runner.py)*
 
-### 4.2. Discusión de los Resultados
+### 3.5. Discusión de los Resultados
 Los datos demuestran de forma irrefutable las diferencias de diseño:
 *   **Eficiencia de la Compilación Nativa (Rust y Zig):** Al compilar directamente a código de máquina optimizado mediante el backend de LLVM, eliminan cualquier sobrecarga en tiempo de ejecución. El consumo de memoria es extremadamente bajo y constante, limitándose a la huella estática del ejecutable ($\approx 1$ MB).
 *   **Desempeño del motor JIT (JavaScript/V8):** Demuestra una velocidad sobresaliente para ser un lenguaje dinámico. El motor V8 compila al vuelo las rutas calientes de ejecución a código máquina. Sin embargo, su consumo de memoria pico es mayor debido a la infraestructura de la máquina virtual de V8 y su recolector de basura activo.
@@ -124,11 +150,11 @@ Los datos demuestran de forma irrefutable las diferencias de diseño:
 
 ---
 
-## 5. Actividad III: Diseño de un Lenguaje de Dominio Específico (DSL)
+## 4. Actividad III: Diseño de un Lenguaje de Dominio Específico (DSL)
 
 Para solucionar de forma segura el control de la planta industrial crítica **ECO-GRID** (microredes y almacenamiento de energía), se presenta el diseño formal del **Lenguaje L**.
 
-### 5.1. Especificación del Alfabeto y Reglas Léxicas
+### 4.1. Especificación del Alfabeto y Reglas Léxicas
 *   **Identificadores:** `[a-zA-Z_][a-zA-Z0-9_]*`
 *   **Literales Numéricos:** `[0-9]+` (Enteros representando valores de potencia en kW o temperaturas en °C).
 *   **Operador de Asignación:** `:=`
@@ -137,7 +163,7 @@ Para solucionar de forma segura el control de la planta industrial crítica **EC
 *   **Comentarios:** Delimitados por `#` al inicio de la línea.
 *   **Ignorados:** Espacios en blanco, tabulaciones y saltos de línea (no significativos).
 
-### 5.2. Palabras Clave Obligatorias
+### 4.2. Palabras Clave Obligatorias
 *   `init_grid` (Inicializa el driver de hardware de ECO-GRID).
 *   `leer_temperatura(bateria_id)` (Retorna la temperatura de la celda de batería en °C).
 *   `estado_carga(bateria_id)` (Retorna el porcentaje de carga 0-100%).
@@ -145,7 +171,7 @@ Para solucionar de forma segura el control de la planta industrial crítica **EC
 *   `si_verdadero ... entonces ... fin_si` (Estructura condicional).
 *   `mientras ... ejecutar ... fin_mientras` (Estructura repetitiva).
 
-### 5.3. Gramática Sintáctica Abstracta en EBNF
+### 4.3. Gramática Sintáctica Abstracta en EBNF
 ```text
 <programa> ::= "init_grid" ";" <sentencia>*
 <sentencia> ::= <asignacion> | <condicional> | <bucle> | <llamada_accion> ";"
@@ -160,7 +186,7 @@ Para solucionar de forma segura el control de la planta industrial crítica **EC
 <numero> ::= [0-9]+
 ```
 
-### 5.4. Escenario Operativo A: Prevención de Fuga Térmica
+### 4.4. Escenario Operativo A: Prevención de Fuga Térmica
 Este programa monitoriza la temperatura del banco de baterías 1 de forma continua. Si excede $55^\circ\text{C}$, se aísla térmicamente apagando la carga solar, activando ventiladores auxiliares y derivando la carga del sector industrial (línea 1) hacia la red comercial de respaldo (línea 2).
 
 ```text
@@ -176,7 +202,7 @@ mientras 1 == 1 ejecutar
 fin_mientras
 ```
 
-### 5.5. Escenario Operativo B: Balance de Carga y Optimización Energética
+### 4.5. Escenario Operativo B: Balance de Carga y Optimización Energética
 Este script evalúa el estado de carga de las baterías. Si la carga supera el $90\%$ y hay excedente solar, activa relés para vender electricidad. Si la carga cae por debajo del $20\%$ durante la noche, apaga los sectores de consumo no esenciales para reservar energía en áreas críticas (médicas y servidores).
 
 ```text
@@ -199,7 +225,7 @@ fin_mientras
 
 ---
 
-## 6. Consideraciones sobre Inteligencia Artificial y Ética
+## 5. Consideraciones sobre Inteligencia Artificial y Ética
 
 El auge de la Inteligencia Artificial Generativa y los Grandes Modelos de Lenguaje (LLMs) ha redefinido las metodologías de enseñanza y el trabajo de ingeniería de software a escala mundial. En el ámbito académico de la UNEG, se establecen directrices claras sobre responsabilidad ética:
 *   **Uso como Habilitador Académico:** Se permite el uso de IA como un asistente de aprendizaje para depurar la sintaxis, documentar código y proponer optimizaciones en los algoritmos de benchmarking.
@@ -208,7 +234,7 @@ El auge de la Inteligencia Artificial Generativa y los Grandes Modelos de Lengua
 
 ---
 
-## 7. Conclusiones
+## 6. Conclusiones
 
 1.  **El Lenguaje como Arquitectura:** Los lenguajes de programación no son entes abstractos rígidos; sus reglas morfológicas e intérpretes determinan de forma fundamental el rendimiento del sistema final.
 2.  **Desempeño Comparativo:** El análisis de benchmarking evidencia que para sistemas críticos y de alto rendimiento, los lenguajes de compilación nativa (Rust y Zig) son indispensables debido a su mínima latencia y gestión de memoria determinista y predecible.
@@ -216,16 +242,16 @@ El auge de la Inteligencia Artificial Generativa y los Grandes Modelos de Lengua
 
 ---
 
-## 8. Protocolo de Entrega y RETO DE FRASES
+## 7. Protocolo de Entrega y RETO DE FRASES
 
-### 8.1. Protocolo de Entrega
+### 7.1. Protocolo de Entrega
 De acuerdo con las instrucciones de la asignatura, la entrega de este proyecto debe ser realizada por el **líder de grupo vía correo electrónico** a la dirección oficial del docente, indicando:
 1.  Nombre del grupo y su eslogan.
 2.  Listado oficial de participantes.
 3.  Dirección del repositorio Git remoto conteniendo todos los códigos fuente organizados en directorios, el archivo README y el PDF del informe.
 4.  Enlace del video de la defensa en Google Drive (duración máxima de 10 minutos por participante).
 
-### 8.2. RETO DE FRASES (Verificación de Lectura del PDF)
+### 7.2. RETO DE FRASES (Verificación de Lectura del PDF)
 Como prueba inequívoca de la lectura exhaustiva y rigurosa del material oficial, se adjuntan a continuación las frases marcadas con el prefijo `F:` que se encontraban ocultas en el documento guía de la asignatura:
 
 *   **Frase 1 (Objetivos):** *"F: aunque existen diferentes paradigmas siempre nos enamoramos de uno, pero esto no indica que no debamos dominar los demás y aplicarlo según las circunstancias."*
@@ -238,7 +264,7 @@ Como prueba inequívoca de la lectura exhaustiva y rigurosa del material oficial
 
 ---
 
-## 9. Referencias Bibliográficas
+## 8. Referencias Bibliográficas
 
 *   Aho, A. V., Lam, M. S., Sethi, R., & Ullman, J. D. (2008). *Compiladores: Principios, técnicas y herramientas* (2da ed.). Pearson Educación.
 *   Ecma International. (2025). *ECMAScript 2025 Language Specification*. https://tc39.es/ecma262/
