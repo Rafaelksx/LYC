@@ -2,6 +2,10 @@ import os
 import sys
 import subprocess
 import json
+import warnings
+
+# Silenciar advertencias de sustitución de fuente de fpdf2
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Try importing fpdf2, install it if missing
 try:
@@ -15,124 +19,132 @@ class AcademicPDF(FPDF):
     def header(self):
         if self.page_no() == 1:
             return # No header on cover page
-        self.set_font("Helvetica", "I", 8)
+        self.set_font("Arial", "I", 8)
         self.set_text_color(100, 100, 100)
         self.cell(0, 10, "UNIVERSIDAD NACIONAL EXPERIMENTAL DE GUAYANA - LENGUAJE Y COMPILADORES", align="C", new_x="LMARGIN", new_y="NEXT")
         self.set_draw_color(200, 200, 200)
-        self.line(10, 18, 200, 18)
+        self.line(25.4, 18, 184.6, 18)
         self.ln(5)
 
     def footer(self):
         if self.page_no() == 1:
             return # No footer on cover page
-        self.set_y(-15)
-        self.set_font("Helvetica", "I", 8)
+        self.set_y(-20)
+        self.set_font("Arial", "I", 8)
         self.set_text_color(100, 100, 100)
         self.cell(0, 10, f"Página {self.page_no()}", align="C")
 
 def create_cover_page(pdf):
     pdf.add_page()
     
-    # Institution Logo Placeholder or Text Header
-    pdf.ln(10)
-    pdf.set_font("Helvetica", "B", 13)
-    pdf.set_text_color(15, 23, 42)
-    pdf.cell(0, 6, "UNIVERSIDAD NACIONAL EXPERIMENTAL DE GUAYANA", align="C", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 6, "VICERRECTORADO ACADÉMICO", align="C", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 6, "COORDINACIÓN DE INGENIERÍA EN INFORMÁTICA", align="C", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 6, "LENGUAJE Y COMPILADORES (2026-I)", align="C", new_x="LMARGIN", new_y="NEXT")
+    # Resolve logo path relative to this script
+    logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uneg-logo.png")
+    if os.path.exists(logo_path):
+        # Draw centered logo (page width 210mm, logo width 25mm, centered x is 92.5mm)
+        pdf.image(logo_path, x=92.5, y=25.4, w=25)
+        pdf.ln(28) # spacing after logo
+    else:
+        pdf.ln(10)
     
-    pdf.ln(45)
+    pdf.set_font("Arial", "B", 12)
+    pdf.set_text_color(15, 23, 42)
+    pdf.cell(0, 5.5, "UNIVERSIDAD NACIONAL EXPERIMENTAL DE GUAYANA", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 5.5, "VICERRECTORADO ACADÉMICO", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 5.5, "COORDINACIÓN DE INGENIERÍA EN INFORMÁTICA", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 5.5, "LENGUAJE Y COMPILADORES (2026-I)", align="C", new_x="LMARGIN", new_y="NEXT")
+    
+    pdf.ln(35)
     
     # Assignment Title
-    pdf.set_font("Helvetica", "B", 18)
+    pdf.set_font("Arial", "B", 16)
     pdf.set_text_color(30, 41, 59)
-    pdf.multi_cell(0, 8, "INFORME DE INVESTIGACIÓN: ESTUDIO COMPARATIVO DE PARADIGMAS, LENGUAJES Y DISEÑO DE DSL", align="C")
+    pdf.multi_cell(0, 7.5, "INFORME DE INVESTIGACIÓN: ESTUDIO COMPARATIVO DE PARADIGMAS, LENGUAJES Y DISEÑO DE DSL", align="C")
     
-    pdf.ln(10)
-    pdf.set_font("Helvetica", "", 12)
+    pdf.ln(8)
+    pdf.set_font("Arial", "", 12)
     pdf.set_text_color(71, 85, 105)
     pdf.cell(0, 6, "Asignación II: Los Lenguajes de Programación", align="C", new_x="LMARGIN", new_y="NEXT")
     
-    pdf.ln(60)
+    pdf.ln(50)
     
     # Student and Professor info
-    pdf.set_font("Helvetica", "B", 10.5)
+    pdf.set_font("Arial", "B", 10.5)
     pdf.set_text_color(15, 23, 42)
     
-    # Left column: Autores, Right column: Profesor
-    pdf.cell(110, 5, "Autores:", align="L")
-    pdf.cell(80, 5, "Profesor:", align="R", new_x="LMARGIN", new_y="NEXT")
+    # Usable width with 25.4mm margins is 159.2mm.
+    # Column 1 (Autores) width = 95mm, Column 2 (Profesor) width = 64mm
+    pdf.cell(95, 5, "Autores:", align="L")
+    pdf.cell(64, 5, "Profesor:", align="R", new_x="LMARGIN", new_y="NEXT")
     
-    pdf.set_font("Helvetica", "", 10.5)
+    pdf.set_font("Arial", "", 10.5)
     
     # Row 1
-    pdf.cell(110, 5, "Fernando Centeno (C.I. 30.810.484)", align="L")
-    pdf.cell(80, 5, "Félix Márquez", align="R", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(95, 5, "Fernando Centeno (C.I. 30.810.484)", align="L")
+    pdf.cell(64, 5, "Félix Márquez", align="R", new_x="LMARGIN", new_y="NEXT")
     
     # Row 2
-    pdf.cell(110, 5, "Juan Longart (C.I. 31.882.343)", align="L")
-    pdf.cell(80, 5, "fmarquez@e.uneg.edu.ve", align="R", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(95, 5, "Juan Longart (C.I. 31.882.343)", align="L")
+    pdf.cell(64, 5, "fmarquez@e.uneg.edu.ve", align="R", new_x="LMARGIN", new_y="NEXT")
     
     # Row 3
-    pdf.cell(110, 5, "Adrian Reina (C.I. 31.317.970)", align="L")
-    pdf.cell(80, 5, "", align="R", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(95, 5, "Adrian Reina (C.I. 31.317.970)", align="L")
+    pdf.cell(64, 5, "", align="R", new_x="LMARGIN", new_y="NEXT")
     
     # Row 4
-    pdf.cell(110, 5, "Rafael Rodríguez (C.I. 31.882.367)", align="L")
-    pdf.cell(80, 5, "", align="R", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(95, 5, "Rafael Rodríguez (C.I. 31.882.367)", align="L")
+    pdf.cell(64, 5, "", align="R", new_x="LMARGIN", new_y="NEXT")
     
     pdf.ln(15)
     
     # Date
-    pdf.set_font("Helvetica", "I", 10)
+    pdf.set_font("Arial", "I", 10)
     pdf.set_text_color(100, 100, 100)
     pdf.cell(0, 6, "Ciudad Guayana, Mayo de 2026", align="C")
 
 def add_section_header(pdf, title):
     pdf.ln(8)
-    pdf.set_font("Helvetica", "B", 14)
+    pdf.set_font("Arial", "B", 14)
     pdf.set_text_color(15, 23, 42)
     pdf.cell(0, 8, title, align="L", new_x="LMARGIN", new_y="NEXT")
-    # Horizontal bar
+    # Horizontal bar aligned with APA margins (ends at 184.6mm)
     pdf.set_draw_color(99, 102, 241)
     pdf.set_line_width(0.5)
-    pdf.line(pdf.get_x(), pdf.get_y(), 200, pdf.get_y())
+    pdf.line(pdf.get_x(), pdf.get_y(), 184.6, pdf.get_y())
     pdf.ln(4)
 
 def add_subsection_header(pdf, title):
     pdf.ln(4)
-    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_font("Arial", "B", 12)
     pdf.set_text_color(30, 41, 59)
     pdf.cell(0, 6, title, align="L", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
 def add_paragraph(pdf, text):
-    pdf.set_font("Helvetica", "", 10.5)
+    pdf.set_font("Arial", "", 12) # Arial 12 as requested
     pdf.set_text_color(51, 65, 85)
-    pdf.multi_cell(0, 5.5, text, align="J")
+    pdf.multi_cell(0, 7.0, text, align="J") # justified with 1.5 line spacing (7.0 height)
     pdf.ln(3)
 
 def add_bullet_point(pdf, bold_part, normal_part):
-    pdf.set_font("Helvetica", "B", 10.5)
+    pdf.set_font("Arial", "B", 12)
     pdf.set_text_color(51, 65, 85)
-    pdf.write(5.5, "  * " + bold_part + ": ")
-    pdf.set_font("Helvetica", "", 10.5)
-    pdf.write(5.5, normal_part + "\n")
+    pdf.write(7.0, "  * " + bold_part + ": ")
+    pdf.set_font("Arial", "", 12)
+    pdf.write(7.0, normal_part + "\n")
     pdf.ln(1)
 
 def add_numbered_point(pdf, number_str, bold_part, normal_part):
-    pdf.set_font("Helvetica", "B", 10.5)
+    pdf.set_font("Arial", "B", 12)
     pdf.set_text_color(51, 65, 85)
-    pdf.write(5.5, f"  {number_str} " + bold_part + ": ")
-    pdf.set_font("Helvetica", "", 10.5)
-    pdf.write(5.5, normal_part + "\n")
+    pdf.write(7.0, f"  {number_str} " + bold_part + ": ")
+    pdf.set_font("Arial", "", 12)
+    pdf.write(7.0, normal_part + "\n")
     pdf.ln(1)
 
 def add_plain_bullet(pdf, bullet_str, text):
-    pdf.set_font("Helvetica", "", 10.5)
+    pdf.set_font("Arial", "", 12)
     pdf.set_text_color(51, 65, 85)
-    pdf.write(5.5, f"  {bullet_str} " + text + "\n")
+    pdf.write(7.0, f"  {bullet_str} " + text + "\n")
     pdf.ln(1)
 
 def add_code_block(pdf, code):
@@ -144,10 +156,30 @@ def add_code_block(pdf, code):
     pdf.multi_cell(0, 4.5, code, border=1, fill=True, align="L")
     pdf.ln(3)
 
+def shorten_paradigm(p):
+    if "Prototípico" in p:
+        return "Multiparadigma (Prot/Func)"
+    if "Funcional, Imperativo" in p:
+        return "Multiparadigma (Func/Imp)"
+    if "POO, Imperativo" in p:
+        return "Multiparadigma (POO/Imp)"
+    if "Imperativo" in p:
+        return "Imperativo"
+    return p
+
+def shorten_mechanism(m):
+    if "CPython" in m or "Interpretado" in m:
+        return "Interpretado (VM)"
+    if "V8" in m or "JIT" in m:
+        return "JIT (V8 Engine)"
+    if "LLVM" in m or "Nativa" in m:
+        return "Nativo (LLVM)"
+    return m
+
 def generate_pdf(results_data=None):
     pdf = AcademicPDF(orientation="P", unit="mm", format="A4")
-    pdf.set_margins(15, 20, 15)
-    pdf.set_auto_page_break(auto=True, margin=20)
+    pdf.set_margins(25.4, 25.4, 25.4) # 1 inch margins as requested
+    pdf.set_auto_page_break(auto=True, margin=25.4)
     
     # 1. Cover
     create_cover_page(pdf)
@@ -259,7 +291,7 @@ def generate_pdf(results_data=None):
     add_bullet_point(pdf, "Gestión de Memoria y Recolector de Basura", "Combina conteo de referencias (liberación inmediata) con un recolector de basura generacional cíclico secundario para ciclos inaccesibles.")
     add_bullet_point(pdf, "Global Interpreter Lock (GIL)", "Cerrojo que impide ejecutar bytecode de Python simultáneamente en varios hilos nativos, bloqueando el paralelismo CPU-bound real y forzando multiprocesamiento.")
     
-    add_subsection_header(pdf, "3.3.4. JavaScript (V8 Engine): Compilación JIT de Doble Estapa y Concurrencia por Eventos")
+    add_subsection_header(pdf, "3.3.4. JavaScript (V8 Engine): Compilación JIT de Doble Etapa y Concurrencia por Eventos")
     add_bullet_point(pdf, "Compilación JIT (V8)", "Usa dos etapas: Ignition (intérprete rápido de bytecode) y TurboFan (compilador optimizador JIT que compila funciones calientes a código de máquina basándose en retroalimentación de tipos, con des-optimización dinámica si fallan los tipos).")
     add_bullet_point(pdf, "Gestión de Memoria", "Usa un GC generacional con un espacio joven (New Space - Scavenger) y un espacio viejo (Old Space - Mark-Sweep-Compact).")
     add_bullet_point(pdf, "Modelo de Concurrencia (Event Loop y libuv)", "JavaScript es monohilo. La concurrencia asíncrona se gestiona vía Event Loop y libuv, delegando I/O bloqueante al ThreadPool y procesando callbacks en el hilo principal de JS.")
@@ -269,63 +301,66 @@ def generate_pdf(results_data=None):
     add_subsection_header(pdf, "3.4. Resultados del Benchmarking (Algoritmo de Collatz)")
     add_paragraph(pdf, "Para evaluar el impacto de las tecnologías de compilación y ejecución, se diseñó un algoritmo intensivo en cómputo que calcula la longitud de la secuencia de la Conjetura de Collatz para cada número entero desde 1 hasta N = 2.000.000. A continuación se presentan los resultados obtenidos en el hardware local:")
 
-    # Table header
-    pdf.set_font("Helvetica", "B", 9)
+    # Table header (Total width = 159mm to fit 25.4mm margins)
+    pdf.set_font("Arial", "B", 9)
     pdf.set_fill_color(99, 102, 241)
     pdf.set_text_color(255, 255, 255)
-    pdf.cell(20, 8, "Lenguaje", border=1, fill=True, align="C")
-    pdf.cell(35, 8, "Paradigma Dominante", border=1, fill=True, align="C")
-    pdf.cell(40, 8, "Mecanismo Ejecución", border=1, fill=True, align="C")
-    pdf.cell(30, 8, "Tiempo Prom.", border=1, fill=True, align="C")
-    pdf.cell(30, 8, "Memoria Pico", border=1, fill=True, align="C")
-    pdf.cell(25, 8, "Vel. Rel.", border=1, fill=True, align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(18, 8, "Lenguaje", border=1, fill=True, align="C")
+    pdf.cell(32, 8, "Paradigma", border=1, fill=True, align="C")
+    pdf.cell(36, 8, "Mecanismo", border=1, fill=True, align="C")
+    pdf.cell(26, 8, "Tiempo", border=1, fill=True, align="C")
+    pdf.cell(26, 8, "Memoria", border=1, fill=True, align="C")
+    pdf.cell(21, 8, "Vel. Rel.", border=1, fill=True, align="C", new_x="LMARGIN", new_y="NEXT")
 
-    pdf.set_font("Helvetica", "", 9)
+    pdf.set_font("Arial", "", 8) # Font size 8 for content to prevent overflow
     pdf.set_text_color(51, 65, 85)
     
     if results_data and "languages" in results_data:
         py_time = results_data["languages"]["Python"]["time_ms"]
         for lang, data in results_data["languages"].items():
             rel = py_time / data["time_ms"] if data["time_ms"] > 0 else 0
-            pdf.cell(20, 8, lang, border=1, align="C")
-            pdf.cell(35, 8, data.get("paradigm", "Multiparadigma"), border=1, align="C")
-            pdf.cell(40, 8, data["mechanism"], border=1, align="C")
-            pdf.cell(30, 8, f"{data['time_ms']:.2f} ms", border=1, align="C")
-            pdf.cell(30, 8, f"{data['memory_mb']:.4f} MB", border=1, align="C")
-            pdf.cell(25, 8, f"{rel:.1f}x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
+            parad = shorten_paradigm(data.get("paradigm", "Multiparadigma"))
+            mech = shorten_mechanism(data["mechanism"])
+            
+            pdf.cell(18, 8, lang, border=1, align="C")
+            pdf.cell(32, 8, parad, border=1, align="C")
+            pdf.cell(36, 8, mech, border=1, align="C")
+            pdf.cell(26, 8, f"{data['time_ms']:.2f} ms", border=1, align="C")
+            pdf.cell(26, 8, f"{data['memory_mb']:.4f} MB", border=1, align="C")
+            pdf.cell(21, 8, f"{rel:.1f}x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
     else:
         # Fallback values if execution didn't complete
         # Python
-        pdf.cell(20, 8, "Python", border=1, align="C")
-        pdf.cell(35, 8, "Multiparadigma", border=1, align="C")
-        pdf.cell(40, 8, "Interpretado (VM)", border=1, align="C")
-        pdf.cell(30, 8, "151557.35 ms", border=1, align="C")
-        pdf.cell(30, 8, "0.0003 MB", border=1, align="C")
-        pdf.cell(25, 8, "1.0x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(18, 8, "Python", border=1, align="C")
+        pdf.cell(32, 8, "Multiparadigma (POO/Imp)", border=1, align="C")
+        pdf.cell(36, 8, "Interpretado (VM)", border=1, align="C")
+        pdf.cell(26, 8, "151557.35 ms", border=1, align="C")
+        pdf.cell(26, 8, "0.0003 MB", border=1, align="C")
+        pdf.cell(21, 8, "1.0x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
         
         # JavaScript
-        pdf.cell(20, 8, "JS (Node)", border=1, align="C")
-        pdf.cell(35, 8, "Multiparadigma", border=1, align="C")
-        pdf.cell(40, 8, "JIT / V8 Engine", border=1, align="C")
-        pdf.cell(30, 8, "2401.99 ms", border=1, align="C")
-        pdf.cell(30, 8, "40.9648 MB", border=1, align="C")
-        pdf.cell(25, 8, "63.1x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(18, 8, "JS (Node)", border=1, align="C")
+        pdf.cell(32, 8, "Multiparadigma (Prot/Func)", border=1, align="C")
+        pdf.cell(36, 8, "JIT (V8 Engine)", border=1, align="C")
+        pdf.cell(26, 8, "2401.99 ms", border=1, align="C")
+        pdf.cell(26, 8, "40.9648 MB", border=1, align="C")
+        pdf.cell(21, 8, "63.1x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
         
         # Rust
-        pdf.cell(20, 8, "Rust", border=1, align="C")
-        pdf.cell(35, 8, "Multiparadigma", border=1, align="C")
-        pdf.cell(40, 8, "Compilado LLVM", border=1, align="C")
-        pdf.cell(30, 8, "1848.26 ms", border=1, align="C")
-        pdf.cell(30, 8, "1.2500 MB", border=1, align="C")
-        pdf.cell(25, 8, "82.0x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(18, 8, "Rust", border=1, align="C")
+        pdf.cell(32, 8, "Multiparadigma (Func/Imp)", border=1, align="C")
+        pdf.cell(36, 8, "Nativo (LLVM)", border=1, align="C")
+        pdf.cell(26, 8, "1848.26 ms", border=1, align="C")
+        pdf.cell(26, 8, "1.2500 MB", border=1, align="C")
+        pdf.cell(21, 8, "82.0x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
 
         # Zig
-        pdf.cell(20, 8, "Zig", border=1, align="C")
-        pdf.cell(35, 8, "Imperativo", border=1, align="C")
-        pdf.cell(40, 8, "Compilado LLVM", border=1, align="C")
-        pdf.cell(30, 8, "1981.14 ms", border=1, align="C")
-        pdf.cell(30, 8, "1.1000 MB", border=1, align="C")
-        pdf.cell(25, 8, "76.5x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(18, 8, "Zig", border=1, align="C")
+        pdf.cell(32, 8, "Imperativo", border=1, align="C")
+        pdf.cell(36, 8, "Nativo (LLVM)", border=1, align="C")
+        pdf.cell(26, 8, "1981.14 ms", border=1, align="C")
+        pdf.cell(26, 8, "1.1000 MB", border=1, align="C")
+        pdf.cell(21, 8, "76.5x", border=1, align="C", new_x="LMARGIN", new_y="NEXT")
 
     pdf.ln(4)
     add_paragraph(pdf, "Análisis del Benchmark: Los resultados evidencian la enorme diferencia entre los lenguajes compilados nativamente (Rust y Zig), que completan la tarea en milisegundos gracias al diseño optimizado de bucles por LLVM, frente a Python, que sufre penalizaciones por la sobrecarga del bucle de evaluación e introspección de tipos en su máquina virtual.")
@@ -431,7 +466,7 @@ fin_mientras"""
     add_subsection_header(pdf, "7.2. RETO DE FRASES (Verificación de Lectura del PDF)")
     add_paragraph(pdf, "Como prueba inequívoca de la lectura exhaustiva y rigurosa del material oficial, se adjuntan a continuación las frases marcadas con el prefijo F: que se encontraban ocultas en el documento guía de la asignatura:")
     
-    pdf.set_font("Helvetica", "I", 9.5)
+    pdf.set_font("Arial", "I", 9.5)
     pdf.set_text_color(71, 85, 105)
     phrases = [
         "1. Frase 1 (Objetivos): 'F: aunque existen diferentes paradigmas siempre nos enamoramos de uno, pero esto no indica que no debamos dominar los demás y aplicarlo según las circunstancias.'",
@@ -447,7 +482,7 @@ fin_mientras"""
         pdf.ln(1)
 
     add_section_header(pdf, "8. Referencias Bibliográficas")
-    pdf.set_font("Helvetica", "", 9.5)
+    pdf.set_font("Arial", "", 9.5)
     pdf.set_text_color(51, 65, 85)
     pdf.multi_cell(0, 5, "Aho, A. V., Lam, M. S., Sethi, R., & Ullman, J. D. (2008). Compiladores: Principios, técnicas y herramientas (2da ed.). Pearson Educación.\n"
                           "Ecma International. (2025). ECMAScript 2025 Language Specification. https://tc39.es/ecma262/\n"
