@@ -3,6 +3,8 @@
 **Universidad:** Universidad Nacional Experimental de Guayana (UNEG)  
 **Profesor:** Félix Márquez  
 **Autores:** Fernando Centeno (30810484), Juan Longart (31882343), Adrian Reina (31317970), Rafael Rodríguez (31882367)  
+**Video de la Defensa:** [Ver Video en YouTube](https://youtu.be/y8kS5iES2DI)  
+
 
 Este repositorio contiene la resolución completa de la Asignación II, incluyendo la resolución analítica de paradigmas, el estudio comparativo de lenguajes con benchmarking de rendimiento (Collatz Conjecture), el diseño formal del DSL **Lenguaje L** para ECO-GRID, y la presentación en HTML.
 
@@ -11,9 +13,8 @@ Este repositorio contiene la resolución completa de la Asignación II, incluyen
 ## Estructura del Proyecto
 
 ```text
-├── informe.md              # Informe escrito completo (Markdown)
-├── informe.pdf             # Informe compilado (PDF académico)
-├── presentacion.html       # Presentación interactiva (HTML + CSS Vanilla)
+├── informe.pdf             # Informe  (PDF académico)
+├── presentacion.html       # Presentación interactiva 
 ├── README.md               # Este archivo instructivo
 └── src/                    # Códigos fuente del proyecto
     ├── python/
@@ -27,7 +28,6 @@ Este repositorio contiene la resolución completa de la Asignación II, incluyen
     ├── zig/
     │   └── main.zig        # Benchmark de Collatz en Zig
     ├── runner.py           # Orquestador y colector de rendimiento
-    └── pdf_generator.py    # Compilador de PDF de informe.md
 ```
 
 ---
@@ -87,29 +87,6 @@ zig build-exe main.zig -O ReleaseFast
 
 ---
 
-## Compilación del Informe a PDF
-
-El informe escrito está redactado en [informe.md](file:///c:/Users/rafae/OneDrive/Desktop/Baack/Lenguajes%20y%20Compiladores/Tema2/informe.md). Hemos provisto un script automatizado `src/pdf_generator.py` que lee los resultados del benchmark de `src/benchmark_results.json` y genera un PDF formateado con portada, headers y tablas.
-
-Para compilarlo usando `uv` (recomendado, descarga las librerías automáticamente en un entorno temporal):
-```bash
-uv run --with fpdf2 src/pdf_generator.py
-```
-
-O si prefieres instalar la librería de forma global en tu Python:
-```bash
-pip install fpdf2
-python src/pdf_generator.py
-```
-
-El PDF se guardará en la raíz del proyecto como `informe.pdf`.
-
----
-
 ## Ver la Presentación Interactiva
 
-La presentación está en [presentacion.html](file:///c:/Users/rafae/OneDrive/Desktop/Baack/Lenguajes%20y%20Compiladores/Tema2/presentacion.html).
-*   Simplemente haz doble clic sobre el archivo para abrirlo en cualquier navegador web.
-*   Usa las teclas **Flecha Derecha** o **Espacio** para avanzar de diapositiva.
-*   Usa la tecla **Flecha Izquierda** para retroceder.
-*   En dispositivos móviles, puedes navegar deslizando el dedo (swipe horizontal).
+La presentación está en [presentacion.html]

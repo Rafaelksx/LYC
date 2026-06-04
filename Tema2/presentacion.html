@@ -5,7 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tema 2: Los Lenguajes de Programación y Compiladores</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --bg-dark: #030712;
@@ -88,8 +90,15 @@
     }
 
     @keyframes pulse {
-      0% { transform: scale(1) translate(0, 0); opacity: 0.12; }
-      100% { transform: scale(1.15) translate(30px, 40px); opacity: 0.22; }
+      0% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.12;
+      }
+
+      100% {
+        transform: scale(1.15) translate(30px, 40px);
+        opacity: 0.22;
+      }
     }
 
     /* Slide System */
@@ -125,7 +134,10 @@
     }
 
     /* Typography & Headers */
-    h1, h2, h3, .slide-title {
+    h1,
+    h2,
+    h3,
+    .slide-title {
       font-family: 'Outfit', sans-serif;
     }
 
@@ -258,24 +270,42 @@
       border: 1px solid rgba(99, 102, 241, 0.25);
     }
 
-    .card.purple-theme { border-color: var(--border-purple); }
-    .card.purple-theme:hover { border-color: rgba(139, 92, 246, 0.6); }
+    .card.purple-theme {
+      border-color: var(--border-purple);
+    }
+
+    .card.purple-theme:hover {
+      border-color: rgba(139, 92, 246, 0.6);
+    }
+
     .card.purple-theme .card-icon {
       background: rgba(139, 92, 246, 0.15);
       color: var(--accent-purple);
       border-color: rgba(139, 92, 246, 0.25);
     }
 
-    .card.teal-theme { border-color: var(--border-teal); }
-    .card.teal-theme:hover { border-color: rgba(13, 148, 136, 0.6); }
+    .card.teal-theme {
+      border-color: var(--border-teal);
+    }
+
+    .card.teal-theme:hover {
+      border-color: rgba(13, 148, 136, 0.6);
+    }
+
     .card.teal-theme .card-icon {
       background: rgba(13, 148, 136, 0.15);
       color: var(--accent-teal);
       border-color: rgba(13, 148, 136, 0.25);
     }
 
-    .card.amber-theme { border-color: var(--border-amber); }
-    .card.amber-theme:hover { border-color: rgba(245, 158, 11, 0.6); }
+    .card.amber-theme {
+      border-color: var(--border-amber);
+    }
+
+    .card.amber-theme:hover {
+      border-color: rgba(245, 158, 11, 0.6);
+    }
+
     .card.amber-theme .card-icon {
       background: rgba(245, 158, 11, 0.15);
       color: var(--accent-amber);
@@ -507,22 +537,66 @@
 
     /* Responsive adjustments */
     @media (max-width: 1024px) {
-      .slide { padding: 40px 40px; }
-      h1 { font-size: 2.4rem; }
-      h2 { font-size: 1.8rem; }
-      .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
-      .two-col-layout { grid-template-columns: 1fr; gap: 20px; }
+      .slide {
+        padding: 40px 40px;
+      }
+
+      h1 {
+        font-size: 2.4rem;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .two-col-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
     }
 
     @media (max-width: 768px) {
-      .slide { padding: 30px 20px; justify-content: flex-start; overflow-y: auto; }
-      h1 { font-size: 1.8rem; margin-top: 20px; }
-      h2 { font-size: 1.4rem; }
-      .cards-grid { grid-template-columns: 1fr; }
-      .navigation-bar { bottom: 15px; }
-      .slide-counter, .help-hint { display: none; }
-      table { font-size: 0.75rem; }
-      th, td { padding: 8px 10px; }
+      .slide {
+        padding: 30px 20px;
+        justify-content: flex-start;
+        overflow-y: auto;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        margin-top: 20px;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .navigation-bar {
+        bottom: 15px;
+      }
+
+      .slide-counter,
+      .help-hint {
+        display: none;
+      }
+
+      table {
+        font-size: 0.75rem;
+      }
+
+      th,
+      td {
+        padding: 8px 10px;
+      }
     }
   </style>
 </head>
@@ -541,8 +615,10 @@
     <span class="badge">Defensa de Investigación</span>
     <h1>Estudio de Paradigmas, Lenguajes de Programación y Diseño de DSL</h1>
     <div class="subtitle">UNEG — Asignación II — Mayo 2026</div>
-    <div style="color: #a5b4fc; font-weight: 500; font-size: 0.95rem; margin-top: 10px; max-width: 900px; text-align: center; line-height: 1.6;">
-      <strong>Integrantes:</strong> Fernando Centeno (30.810.484), Juan Longart (31.882.343), Adrian Reina (31.317.970), Rafael Rodríguez (31.882.367)<br>
+    <div
+      style="color: #a5b4fc; font-weight: 500; font-size: 0.95rem; margin-top: 10px; max-width: 900px; text-align: center; line-height: 1.6;">
+      <strong>Integrantes:</strong> Fernando Centeno (30.810.484), Juan Longart (31.882.343), Adrian Reina (31.317.970),
+      Rafael Rodríguez (31.882.367)<br>
       <strong>Profesor:</strong> Félix Márquez
     </div>
   </section>
@@ -550,8 +626,9 @@
   <!-- Slide 2: Objetivos de la Investigación -->
   <section class="slide" id="slide-2">
     <h2>Objetivos de la Investigación</h2>
-    <p style="margin-bottom: 25px; font-size: 1.05rem;">Analizar la infraestructura lingüística y el impacto del diseño de compiladores/intérpretes sobre el software.</p>
-    
+    <p style="margin-bottom: 25px; font-size: 1.05rem;">Analizar la infraestructura lingüística y el impacto del diseño
+      de compiladores/intérpretes sobre el software.</p>
+
     <div class="cards-grid">
       <div class="card">
         <div class="card-icon">01</div>
@@ -583,27 +660,32 @@
   <section class="slide" id="slide-3">
     <h2>Matriz Descriptiva de Paradigmas</h2>
     <p style="margin-bottom: 20px;">Los ejes conceptuales que definen el flujo de ejecución y datos:</p>
-    
+
     <div class="cards-grid" style="grid-template-columns: repeat(5, 1fr);">
       <div class="card" style="padding: 15px;">
         <h3 style="color: var(--accent-indigo);">Imperativo</h3>
-        <p style="font-size: 0.8rem; line-height: 1.4;">• Secuenciación de instrucciones.<br>• Mutabilidad de memoria.<br>• Estado explícito.<br>• Alta velocidad.</p>
+        <p style="font-size: 0.8rem; line-height: 1.4;">• Secuenciación de instrucciones.<br>• Mutabilidad de
+          memoria.<br>• Estado explícito.<br>• Alta velocidad.</p>
       </div>
       <div class="card purple-theme" style="padding: 15px;">
         <h3 style="color: var(--accent-purple);">Objetos (POO)</h3>
-        <p style="font-size: 0.8rem; line-height: 1.4;">• Encapsulamiento.<br>• Polimorfismo.<br>• Herencia vs. composición.<br>• Abstracción de datos.</p>
+        <p style="font-size: 0.8rem; line-height: 1.4;">• Encapsulamiento.<br>• Polimorfismo.<br>• Herencia vs.
+          composición.<br>• Abstracción de datos.</p>
       </div>
       <div class="card teal-theme" style="padding: 15px;">
         <h3 style="color: var(--accent-teal);">Funcional</h3>
-        <p style="font-size: 0.8rem; line-height: 1.4;">• Inmutabilidad absoluta.<br>• Funciones 1er orden.<br>• Lazy evaluation.<br>• Transparencia referencial.</p>
+        <p style="font-size: 0.8rem; line-height: 1.4;">• Inmutabilidad absoluta.<br>• Funciones 1er orden.<br>• Lazy
+          evaluation.<br>• Transparencia referencial.</p>
       </div>
       <div class="card amber-theme" style="padding: 15px;">
         <h3 style="color: var(--accent-amber);">Lógico</h3>
-        <p style="font-size: 0.8rem; line-height: 1.4;">• Basado en relaciones.<br>• Cláusulas de Horn.<br>• Unificación y backtrack.<br>• Declarativo puro.</p>
+        <p style="font-size: 0.8rem; line-height: 1.4;">• Basado en relaciones.<br>• Cláusulas de Horn.<br>• Unificación
+          y backtrack.<br>• Declarativo puro.</p>
       </div>
       <div class="card" style="padding: 15px; border-color: var(--accent-rose);">
         <h3 style="color: var(--accent-rose);">Actores</h3>
-        <p style="font-size: 0.8rem; line-height: 1.4;">• Paso de mensajes.<br>• Aislamiento de estado.<br>• Cero variables mutables compartidas.</p>
+        <p style="font-size: 0.8rem; line-height: 1.4;">• Paso de mensajes.<br>• Aislamiento de estado.<br>• Cero
+          variables mutables compartidas.</p>
       </div>
     </div>
   </section>
@@ -612,23 +694,27 @@
   <section class="slide" id="slide-4">
     <h2>Actividad II: Análisis Morfológico</h2>
     <p style="margin-bottom: 20px;">Diferencias en la construcción de tokens, literales y comentarios:</p>
-    
+
     <div class="cards-grid">
       <div class="card">
         <h3>Python</h3>
-        <p>Indentación significativa en lugar de llaves delimitadoras. Palabras reservadas inmutables. Comentarios con '#' y cadenas con comillas simples/dobles dinámicas.</p>
+        <p>Indentación significativa en lugar de llaves delimitadoras. Palabras reservadas inmutables. Comentarios con
+          '#' y cadenas con comillas simples/dobles dinámicas.</p>
       </div>
       <div class="card purple-theme">
         <h3>JavaScript</h3>
-        <p>Sintaxis con llaves `{}`. Inserción automática de punto y coma (ASI). Literales numéricos dinámicos de doble precisión y tipado dinámico en tiempo de ejecución.</p>
+        <p>Sintaxis con llaves `{}`. Inserción automática de punto y coma (ASI). Literales numéricos dinámicos de doble
+          precisión y tipado dinámico en tiempo de ejecución.</p>
       </div>
       <div class="card teal-theme">
         <h3>Rust</h3>
-        <p>Delimitadores de bloque rígidos `{}`. Tipado explícito con sufijos numéricos. Comentarios `//` y `/* */`. Identificadores con convención snake_case.</p>
+        <p>Delimitadores de bloque rígidos `{}`. Tipado explícito con sufijos numéricos. Comentarios `//` y `/* */`.
+          Identificadores con convención snake_case.</p>
       </div>
       <div class="card amber-theme">
         <h3>Zig</h3>
-        <p>Llaves obligatorias y punto y coma. Sin variables ocultas (shadowing prohibido). Tipos explícitos y control riguroso de inicialización de tokens en compilación.</p>
+        <p>Llaves obligatorias y punto y coma. Sin variables ocultas (shadowing prohibido). Tipos explícitos y control
+          riguroso de inicialización de tokens en compilación.</p>
       </div>
     </div>
   </section>
@@ -637,21 +723,28 @@
   <section class="slide" id="slide-5">
     <h2>Actividad II: Análisis Sintáctico</h2>
     <p style="margin-bottom: 25px;">Cómo validan y estructuran la jerarquía gramatical de las instrucciones:</p>
-    
+
     <div class="two-col-layout">
-      <div class="card purple-theme" style="text-align: left; display: flex; flex-direction: column; justify-content: center;">
+      <div class="card purple-theme"
+        style="text-align: left; display: flex; flex-direction: column; justify-content: center;">
         <h3 style="margin-bottom: 12px; font-size: 1.4rem;">Gramáticas y Bloques</h3>
         <ul class="check-list">
-          <li><strong>Python:</strong> Control de flujo por bloques jerárquicos basados en indentación (no requiere paréntesis sintácticos).</li>
-          <li><strong>JavaScript:</strong> Exige paréntesis para condiciones y permite omisión de llaves para sentencias individuales.</li>
-          <li><strong>Rust / Zig:</strong> Eliminan la necesidad de paréntesis en condicionales pero obligan a delimitar bloques sintácticos con llaves, evitando ambigüedades.</li>
+          <li><strong>Python:</strong> Control de flujo por bloques jerárquicos basados en indentación (no requiere
+            paréntesis sintácticos).</li>
+          <li><strong>JavaScript:</strong> Exige paréntesis para condiciones y permite omisión de llaves para sentencias
+            individuales.</li>
+          <li><strong>Rust / Zig:</strong> Eliminan la necesidad de paréntesis en condicionales pero obligan a delimitar
+            bloques sintácticos con llaves, evitando ambigüedades.</li>
         </ul>
       </div>
-      <div class="card teal-theme" style="text-align: left; display: flex; flex-direction: column; justify-content: center;">
+      <div class="card teal-theme"
+        style="text-align: left; display: flex; flex-direction: column; justify-content: center;">
         <h3 style="margin-bottom: 12px; font-size: 1.4rem;">Estructuras como Expresiones</h3>
         <ul class="check-list">
-          <li>En <strong>Rust</strong> y <strong>Zig</strong>, casi todas las estructuras condicionales (`if`) y de selección de casos (`match`/`switch`) actúan como expresiones gramaticales.</li>
-          <li>Retornan valores directamente para asignación de variables (ej. `let val = if cond { 1 } else { 2 };`).</li>
+          <li>En <strong>Rust</strong> y <strong>Zig</strong>, casi todas las estructuras condicionales (`if`) y de
+            selección de casos (`match`/`switch`) actúan como expresiones gramaticales.</li>
+          <li>Retornan valores directamente para asignación de variables (ej. `let val = if cond { 1 } else { 2 };`).
+          </li>
           <li>Esto provee una enorme consistencia y reduce la necesidad de variables auxiliares mutables.</li>
         </ul>
       </div>
@@ -662,7 +755,7 @@
   <section class="slide" id="slide-6">
     <h2>Resultados del Benchmarking (Collatz)</h2>
     <p>Prueba de ejecución intensiva: Algoritmo de Collatz para enteros hasta $N = 2,000,000$:</p>
-    
+
     <div class="table-container">
       <table>
         <thead>
@@ -711,32 +804,37 @@
         </tbody>
       </table>
     </div>
-    
+
     <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-muted); max-width: 900px;">
-      <strong>Análisis:</strong> Los compilados nativos (Rust/Zig) optimizan bucles a nivel de registro físico. JS destaca gracias al compilador JIT, mientras que Python muestra el enorme coste de interpretar bytecodes dinámicos.
+      <strong>Análisis:</strong> Los compilados nativos (Rust/Zig) optimizan bucles a nivel de registro físico. JS
+      destaca gracias al compilador JIT, mientras que Python muestra el enorme coste de interpretar bytecodes dinámicos.
     </p>
   </section>
 
   <!-- Slide 7: Actividad III - Diseño de Lenguaje L -->
   <section class="slide" id="slide-7">
     <h2>Actividad III: Diseño de un DSL (Lenguaje L)</h2>
-    <p style="margin-bottom: 20px;">Creado para la operación del sistema crítico de almacenamiento de energía y microredes <strong>ECO-GRID</strong>.</p>
-    
+    <p style="margin-bottom: 20px;">Creado para la operación del sistema crítico de almacenamiento de energía y
+      microredes <strong>ECO-GRID</strong>.</p>
+
     <div class="cards-grid">
       <div class="card">
         <div class="card-icon">A</div>
         <h3>Especificación Alfabeto</h3>
-        <p>Identificadores de variables (`temp`, `carga`), enteros para magnitudes de potencia y temperatura, operador de asignación `:=`, delimitador `;` y comentarios `#`.</p>
+        <p>Identificadores de variables (`temp`, `carga`), enteros para magnitudes de potencia y temperatura, operador
+          de asignación `:=`, delimitador `;` y comentarios `#`.</p>
       </div>
       <div class="card purple-theme">
         <div class="card-icon">K</div>
         <h3>Palabras Clave Obligatorias</h3>
-        <p>Primitivas de hardware: `init_grid`, `leer_temperatura(id)`, `estado_carga(id)` y `conmutar_linea(sector, estado)` (1 = conectar, 0 = aislar).</p>
+        <p>Primitivas de hardware: `init_grid`, `leer_temperatura(id)`, `estado_carga(id)` y `conmutar_linea(sector,
+          estado)` (1 = conectar, 0 = aislar).</p>
       </div>
       <div class="card teal-theme">
         <div class="card-icon">S</div>
         <h3>Estructuras del DSL</h3>
-        <p>Instrucciones condicionales de lenguaje natural acotado `si_verdadero ... entonces ... fin_si` y bucles iterativos `mientras ... ejecutar ... fin_mientras`.</p>
+        <p>Instrucciones condicionales de lenguaje natural acotado `si_verdadero ... entonces ... fin_si` y bucles
+          iterativos `mientras ... ejecutar ... fin_mientras`.</p>
       </div>
     </div>
   </section>
@@ -745,7 +843,7 @@
   <section class="slide" id="slide-8">
     <h2>Gramática EBNF de Lenguaje L</h2>
     <p style="margin-bottom: 15px;">La sintaxis formal que debe interpretar el analizador sintáctico del compilador:</p>
-    
+
     <div style="width: 100%; max-width: 850px; height: 350px;">
       <pre class="code-block">&lt;programa&gt;      ::= "init_grid" ";" &lt;sentencia&gt;*
 &lt;sentencia&gt;     ::= &lt;asignacion&gt; | &lt;condicional&gt; | &lt;bucle&gt; | &lt;llamada_accion&gt; ";"
@@ -764,10 +862,11 @@
   <section class="slide" id="slide-9">
     <h2>Programas de Control Operativo</h2>
     <p style="margin-bottom: 15px;">Scripts resueltos en Lenguaje L para coordinar la planta industrial ECO-GRID:</p>
-    
+
     <div class="two-col-layout" style="height: 380px;">
       <div style="display: flex; flex-direction: column;">
-        <h3 style="font-size: 1rem; color: var(--accent-rose); margin-bottom: 5px;">Escenario A: Prevención de Fuga Térmica</h3>
+        <h3 style="font-size: 1rem; color: var(--accent-rose); margin-bottom: 5px;">Escenario A: Prevención de Fuga
+          Térmica</h3>
         <pre class="code-block" style="font-size: 0.78rem;">init_grid;
 mientras 1 == 1 ejecutar
     temp := leer_temperatura(1);
@@ -780,9 +879,10 @@ mientras 1 == 1 ejecutar
     fin_si
 fin_mientras</pre>
       </div>
-      
+
       <div style="display: flex; flex-direction: column;">
-        <h3 style="font-size: 1rem; color: var(--accent-emerald); margin-bottom: 5px;">Escenario B: Balance y Optimización</h3>
+        <h3 style="font-size: 1rem; color: var(--accent-emerald); margin-bottom: 5px;">Escenario B: Balance y
+          Optimización</h3>
         <pre class="code-block" style="font-size: 0.78rem;">init_grid;
 mientras 1 == 1 ejecutar
     carga := estado_carga(1);
@@ -805,15 +905,19 @@ fin_mientras</pre>
   <section class="slide" id="slide-10">
     <h2>Inteligencia Artificial y Responsabilidad Ética</h2>
     <p style="margin-bottom: 25px;">Postura institucional de la cátedra respecto al uso de herramientas generativas:</p>
-    
+
     <div class="two-col-layout">
       <div class="card" style="text-align: left; border-color: var(--border-teal);">
         <h3 style="color: var(--accent-teal); font-size: 1.25rem;">Habilitador de Aprendizaje</h3>
-        <p style="font-size: 0.9rem; line-height: 1.6;">Se promueve el uso de asistentes de IA (LLMs) como herramientas de apoyo para optimizar el código, resolver bugs sintácticos, investigar la teoría de autómatas y automatizar tareas repetitivas de documentación.</p>
+        <p style="font-size: 0.9rem; line-height: 1.6;">Se promueve el uso de asistentes de IA (LLMs) como herramientas
+          de apoyo para optimizar el código, resolver bugs sintácticos, investigar la teoría de autómatas y automatizar
+          tareas repetitivas de documentación.</p>
       </div>
       <div class="card purple-theme" style="text-align: left;">
         <h3 style="color: var(--accent-purple); font-size: 1.25rem;">Responsabilidad y Defensa</h3>
-        <p style="font-size: 0.9rem; line-height: 1.6;">El uso de IA no exime al programador de la responsabilidad de la autoría. Cada integrante del equipo debe dominar conceptualmente todo el espectro teórico del código y defender de forma autónoma su lógica ante el docente.</p>
+        <p style="font-size: 0.9rem; line-height: 1.6;">El uso de IA no exime al programador de la responsabilidad de la
+          autoría. Cada integrante del equipo debe dominar conceptualmente todo el espectro teórico del código y
+          defender de forma autónoma su lógica ante el docente.</p>
       </div>
     </div>
   </section>
@@ -822,13 +926,17 @@ fin_mientras</pre>
   <section class="slide" id="slide-11">
     <h2>Conclusiones</h2>
     <p style="margin-bottom: 25px;">Los aprendizajes clave derivados de esta investigación:</p>
-    
+
     <div style="max-width: 800px; width: 100%;">
       <ul class="check-list" style="font-size: 1.05rem;">
-        <li style="margin-bottom: 18px;">El diseño léxico y sintáctico del compilador/intérprete dicta la velocidad estructural y la robustez del sistema final.</li>
-        <li style="margin-bottom: 18px;">Los lenguajes nativos compilados (Rust/Zig) son óptimos para sistemas en tiempo real debido a la ausencia de VM y Garbage Collector.</li>
-        <li style="margin-bottom: 18px;">Los DSL (como el Lenguaje L) ofrecen un entorno controlado y seguro, eliminando errores lógicos comunes en lenguajes de propósito general.</li>
-        <li style="margin-bottom: 18px;">La IA es un potente copiloto técnico, pero el dominio intelectual y ético pertenece de forma exclusiva al desarrollador.</li>
+        <li style="margin-bottom: 18px;">El diseño léxico y sintáctico del compilador/intérprete dicta la velocidad
+          estructural y la robustez del sistema final.</li>
+        <li style="margin-bottom: 18px;">Los lenguajes nativos compilados (Rust/Zig) son óptimos para sistemas en tiempo
+          real debido a la ausencia de VM y Garbage Collector.</li>
+        <li style="margin-bottom: 18px;">Los DSL (como el Lenguaje L) ofrecen un entorno controlado y seguro, eliminando
+          errores lógicos comunes en lenguajes de propósito general.</li>
+        <li style="margin-bottom: 18px;">La IA es un potente copiloto técnico, pero el dominio intelectual y ético
+          pertenece de forma exclusiva al desarrollador.</li>
       </ul>
     </div>
   </section>
@@ -836,29 +944,40 @@ fin_mientras</pre>
   <!-- Slide 12: Referencias y Reto de Frases -->
   <section class="slide" id="slide-12">
     <h2>Referencias y Reto de Frases</h2>
-    
+
     <div class="two-col-layout" style="height: 380px;">
       <div style="display: flex; flex-direction: column; text-align: left;">
         <h3 style="font-size: 1.1rem; color: var(--accent-purple); margin-bottom: 8px;">Referencias APA</h3>
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 12px; font-size: 0.72rem; line-height: 1.5; color: var(--text-muted); overflow-y: auto; height: 100%;">
-          • Aho, A. V., Lam, M. S., Sethi, R., & Ullman, J. D. (2008). <em>Compiladores: Principios, técnicas y herramientas</em> (2da ed.). Pearson Educación.<br><br>
-          • Hopcroft, J. E., Motwani, R., & Ullman, J. D. (2008). <em>Introducción a la teoría de autómatas, lenguajes y computación</em> (3ra ed.). Addison-Wesley.<br><br>
+        <div
+          style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 12px; font-size: 0.72rem; line-height: 1.5; color: var(--text-muted); overflow-y: auto; height: 100%;">
+          • Aho, A. V., Lam, M. S., Sethi, R., & Ullman, J. D. (2008). <em>Compiladores: Principios, técnicas y
+            herramientas</em> (2da ed.). Pearson Educación.<br><br>
+          • Hopcroft, J. E., Motwani, R., & Ullman, J. D. (2008). <em>Introducción a la teoría de autómatas, lenguajes y
+            computación</em> (3ra ed.). Addison-Wesley.<br><br>
           • Python Software Foundation. (2026). <em>The Python Language Reference (v3.12)</em>.<br><br>
           • Rust Project Developers. (2026). <em>The Rust Reference</em>.<br><br>
           • Zig Software Foundation. (2026). <em>Zig Language Reference</em>.<br><br>
           • Ecma International. (2025). <em>ECMAScript 2025 Language Specification</em>.
         </div>
       </div>
-      
+
       <div style="display: flex; flex-direction: column; text-align: left;">
-        <h3 style="font-size: 1.1rem; color: var(--accent-amber); margin-bottom: 8px;">Reto de Frases (Verificación)</h3>
-        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 12px; font-size: 0.72rem; line-height: 1.5; color: var(--text-muted); overflow-y: auto; height: 100%;">
-          • <strong>Pág 2:</strong> <em>"F: aunque existen diferentes paradigmas siempre nos enamoramos de uno, pero esto no indica que no debamos dominar los demás y aplicarlo según las circunstancias."</em><br><br>
-          • <strong>Pág 4 (Rust):</strong> <em>"F: Rust representa por su seguridad el nuevo estandar para la construccion de kernel Linux."</em><br><br>
-          • <strong>Pág 4 (Léxico):</strong> <em>"F:La tonkenización en lenguajes es formales diferente a la realizada para los LLM en procesamiento de lenguaje Natural."</em><br><br>
-          • <strong>Pág 4 (Bench):</strong> <em>"F: EL benchmarking es una herramienta comparativa interesante para ingeniero de software alto nivel."</em><br><br>
+        <h3 style="font-size: 1.1rem; color: var(--accent-amber); margin-bottom: 8px;">Reto de Frases (Verificación)
+        </h3>
+        <div
+          style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 12px; font-size: 0.72rem; line-height: 1.5; color: var(--text-muted); overflow-y: auto; height: 100%;">
+          • <strong>Pág 2:</strong> <em>"F: aunque existen diferentes paradigmas siempre nos enamoramos de uno, pero
+            esto no indica que no debamos dominar los demás y aplicarlo según las circunstancias."</em><br><br>
+          • <strong>Pág 4 (Rust):</strong> <em>"F: Rust representa por su seguridad el nuevo estandar para la
+            construccion de kernel Linux."</em><br><br>
+          • <strong>Pág 4 (Léxico):</strong> <em>"F:La tonkenización en lenguajes es formales diferente a la realizada
+            para los LLM en procesamiento de lenguaje Natural."</em><br><br>
+          • <strong>Pág 4 (Bench):</strong> <em>"F: EL benchmarking es una herramienta comparativa interesante para
+            ingeniero de software alto nivel."</em><br><br>
           • <strong>Pág 4 (Graf):</strong> <em>"F: sería ideal hacer una gráfica del benchmarking."</em><br><br>
-          • <strong>Pág 6 (DSL):</strong> <em>"F: Un ejercicio creativo para medir su nivel de abstracción en el diseño de un entorno físico con su respectiva comunicación o interfase hombre maquina (lenguaje), su imaginación es el limite!"</em><br><br>
+          • <strong>Pág 6 (DSL):</strong> <em>"F: Un ejercicio creativo para medir su nivel de abstracción en el diseño
+            de un entorno físico con su respectiva comunicación o interfase hombre maquina (lenguaje), su imaginación es
+            el limite!"</em><br><br>
           • <strong>Pág 8 (APA):</strong> <em>"F: bajo las directrices de las Normas APA"</em>
         </div>
       </div>
@@ -868,11 +987,15 @@ fin_mientras</pre>
   <!-- Navigation Bar UI -->
   <div class="navigation-bar">
     <button class="nav-btn" onclick="goToPrevSlide()" aria-label="Slide anterior">
-      <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      <svg viewBox="0 0 24 24">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+      </svg>
     </button>
     <div class="nav-dots" id="navDots"></div>
     <button class="nav-btn" onclick="goToNextSlide()" aria-label="Siguiente slide">
-      <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      <svg viewBox="0 0 24 24">
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+      </svg>
     </button>
   </div>
 
@@ -906,7 +1029,7 @@ fin_mientras</pre>
 
     function showSlide(index) {
       if (index < 0 || index >= totalSlides) return;
-      
+
       slides.forEach((slide, i) => {
         slide.classList.remove('active', 'exit');
         if (i === index) {
@@ -925,7 +1048,7 @@ fin_mientras</pre>
       });
 
       currentSlideIndex = index;
-      
+
       // Update UI
       slideCounter.textContent = `${index + 1} / ${totalSlides}`;
       progressBar.style.width = `${((index + 1) / totalSlides) * 100}%`;
@@ -965,7 +1088,7 @@ fin_mientras</pre>
     document.addEventListener('touchend', (event) => {
       touchEndX = event.changedTouches[0].screenX;
       const differenceX = touchStartX - touchEndX;
-      
+
       if (Math.abs(differenceX) > 50) {
         if (differenceX > 0) {
           goToNextSlide();
