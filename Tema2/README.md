@@ -3,7 +3,7 @@
 **Universidad:** Universidad Nacional Experimental de Guayana (UNEG)  
 **Profesor:** Félix Márquez  
 **Autores:** Fernando Centeno (30810484), Juan Longart (31882343), Adrian Reina (31317970), Rafael Rodríguez (31882367)  
-**Video de la Defensa:** [Ver Video en YouTube](https://youtu.be/y8kS5iES2DI)  
+**Video de la Defensa:** [Ver Video en YouTube](https://youtu.be/rgbdHJhhGvQ)  
 
 
 Este repositorio contiene la resolución completa de la Asignación II, incluyendo la resolución analítica de paradigmas, el estudio comparativo de lenguajes con benchmarking de rendimiento (Collatz Conjecture), el diseño formal del DSL **Lenguaje L** para ECO-GRID, y la presentación en HTML.
