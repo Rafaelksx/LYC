@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensa Tema 4: Análisis Léxico - UNEG</title>
+    <!-- Google Fonts para Tipografía Premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Paleta Claymorphism Premium (Pasteles Vibrantes 3D) */
+            --bg-main: #e8f0fe;
+            --clay-card-bg: #ffffff;
+            --primary-purple: #8b5cf6;
+            --primary-blue: #3b82f6;
+            --accent-pink: #ec4899;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+
+            /* Sombras Claymorphism (Doble Sombra: Exterior + Interior 3D Inflado) */
+            --clay-shadow-xl: 18px 18px 36px rgba(166, 180, 200, 0.5), -18px -18px 36px rgba(255, 255, 255, 0.9);
+            --clay-card-shadow: 12px 12px 24px rgba(166, 180, 200, 0.45), -12px -12px 24px rgba(255, 255, 255, 0.85);
+            --clay-inset-card: inset 4px 4px 8px rgba(255, 255, 255, 0.9), inset -6px -6px 12px rgba(180, 195, 215, 0.35);
+            --clay-btn-shadow: 6px 6px 12px rgba(140, 155, 180, 0.4), -6px -6px 12px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.7), inset -3px -3px 6px rgba(0, 0, 0, 0.1);
+            --clay-btn-active: inset 4px 4px 8px rgba(0, 0, 0, 0.15), inset -4px -4px 8px rgba(255, 255, 255, 0.7);
+
+            /* Bordes Redondeados Puffy */
+            --radius-card: 32px;
+            --radius-btn: 20px;
+            --radius-pill: 50px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
+        }
+
+        /* Encabezado Superior (Header limpio sin speaker badge) */
+        header {
+            padding: 16px 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .uneg-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--clay-card-bg);
+            padding: 10px 26px;
+            border-radius: var(--radius-pill);
+            box-shadow: var(--clay-btn-shadow);
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            color: var(--primary-purple);
+            font-size: 1.15rem;
+        }
+
+        .uneg-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--accent-emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-emerald);
+            animation: pulse 2s infinite;
+        }
+
+        /* Contenedor Principal de Diapositivas */
+        main {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px 40px;
+        }
+
+        .slide {
+            position: absolute;
+            width: 90%;
+            max-width: 1250px;
+            height: 83vh;
+            background: var(--clay-card-bg);
+            border-radius: var(--radius-card);
+            box-shadow: var(--clay-shadow-xl);
+            padding: 42px 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            opacity: 0;
+            transform: scale(0.92) translateY(30px);
+            pointer-events: none;
+            transition: all 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: all;
+            z-index: 5;
+        }
+
+        /* Diapositiva 1: Portada Académica Formal */
+        .portada-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 22px;
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 25px;
+        }
+
+        .portada-logo {
+            width: 80px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.12));
+        }
+
+        .portada-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            line-height: 1.5;
+            text-transform: uppercase;
+            text-align: left;
+        }
+
+        .portada-title-container {
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .portada-title-container h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.15;
+            margin-bottom: 12px;
+            max-width: 1000px;
+        }
+
+        .portada-title-container p {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            font-weight: 600;
+            max-width: 850px;
+            line-height: 1.4;
+        }
+
+        .portada-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .portada-box-left {
+            text-align: left;
+            background: #f8fafc;
+            padding: 16px 24px;
+            border-radius: 20px;
+            box-shadow: var(--clay-inset-card);
+            border: 1px solid #e2e8f0;
+        }
+
+        .portada-box-left h4 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--primary-purple);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .portada-box-left p {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .portada-box-right {
+            text-align: right;
+            background: #f8fafc;
+            padding: 16px 24px;
+            border-radius: 20px;
+            box-shadow: var(--clay-inset-card);
+            border: 1px solid #e2e8f0;
+        }
+
+        .portada-box-right h4 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--primary-purple);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .portada-box-right p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .portada-date {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 8px 24px;
+            border-radius: var(--radius-pill);
+        }
+
+        /* Tipografía de Títulos y Contenido Interno */
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 38px;
+            background: linear-gradient(180deg, var(--primary-purple), var(--accent-pink));
+            border-radius: 8px;
+            box-shadow: 2px 2px 6px rgba(139, 92, 246, 0.4);
+        }
+
+        .slide-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+
+        /* Rejillas y Tarjetas Clay Internas */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            flex: 1;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            flex: 1;
+        }
+
+        .clay-box {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--clay-card-shadow);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            transition: transform 0.3s ease;
+        }
+
+        .clay-box:hover {
+            transform: translateY(-6px);
+        }
+
+        .clay-box-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .clay-box p,
+        .clay-box li {
+            font-size: 1.02rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .clay-box ul {
+            padding-left: 20px;
+        }
+
+        /* Iconos SVG Inline */
+        .svg-icon {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        .icon-purple {
+            color: var(--primary-purple);
+        }
+
+        .icon-blue {
+            color: var(--primary-blue);
+        }
+
+        .icon-emerald {
+            color: var(--accent-emerald);
+        }
+
+        .icon-pink {
+            color: var(--accent-pink);
+        }
+
+        .icon-amber {
+            color: var(--accent-amber);
+        }
+
+        .icon-red {
+            color: #ef4444;
+        }
+
+        /* Bloques de Código de Estilo Clay Premium */
+        pre,
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88rem;
+        }
+
+        code.inline-code, .inline-code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.88em;
+            background: #f1f5f9;
+            color: #db2777;
+            padding: 2px 7px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        .clay-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 8px;
+        }
+
+        .clay-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 10px;
+            font-size: 1.02rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .clay-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-purple);
+            font-weight: 800;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .clay-code {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 16px 20px;
+            border-radius: 20px;
+            box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.5), inset -4px -4px 10px rgba(255, 255, 255, 0.05);
+            overflow-x: auto;
+            line-height: 1.5;
+            border: 2px solid #334155;
+            margin-top: 10px;
+        }
+
+        .kw {
+            color: #f472b6;
+            font-weight: 600;
+        }
+
+        .str {
+            color: #34d399;
+        }
+
+        .num {
+            color: #fbbf24;
+        }
+
+        .com {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .tok {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        /* Badges y Etiquetas Puffy */
+        .clay-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge-purple {
+            background: #ede9fe;
+            color: var(--primary-purple);
+            box-shadow: 3px 3px 6px rgba(139, 92, 246, 0.2);
+        }
+
+        .badge-blue {
+            background: #e0f2fe;
+            color: var(--primary-blue);
+            box-shadow: 3px 3px 6px rgba(59, 130, 246, 0.2);
+        }
+
+        .badge-green {
+            background: #d1fae5;
+            color: var(--accent-emerald);
+            box-shadow: 3px 3px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-pink {
+            background: #fce7f3;
+            color: var(--accent-pink);
+            box-shadow: 3px 3px 6px rgba(236, 72, 153, 0.2);
+        }
+
+        .badge-amber {
+            background: #fef3c7;
+            color: var(--accent-amber);
+            box-shadow: 3px 3px 6px rgba(245, 158, 11, 0.2);
+        }
+
+        /* Controles de Navegación Inferior (Footer con Botones 3D Clay) */
+        footer {
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .slide-counter {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: var(--clay-card-bg);
+            padding: 10px 22px;
+            border-radius: var(--radius-pill);
+            box-shadow: var(--clay-btn-shadow);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .clay-btn {
+            background: var(--clay-card-bg);
+            border: none;
+            padding: 14px 28px;
+            border-radius: var(--radius-btn);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--primary-purple);
+            cursor: pointer;
+            box-shadow: var(--clay-btn-shadow);
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .clay-btn:hover {
+            transform: translateY(-3px);
+            color: var(--primary-blue);
+        }
+
+        .clay-btn:active {
+            box-shadow: var(--clay-btn-active);
+            transform: translateY(1px);
+        }
+
+        .clay-btn-primary {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-blue));
+            color: white;
+            box-shadow: 6px 6px 16px rgba(139, 92, 246, 0.4), inset -3px -3px 6px rgba(0, 0, 0, 0.2), inset 3px 3px 6px rgba(255, 255, 255, 0.4);
+        }
+
+        .clay-btn-primary:hover {
+            color: white;
+            box-shadow: 8px 8px 20px rgba(139, 92, 246, 0.5), inset -3px -3px 6px rgba(0, 0, 0, 0.2), inset 3px 3px 6px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Indicadores de Diapositiva (Puntos flotantes) */
+        .dots-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            width: 36px;
+            border-radius: var(--radius-pill);
+            background: linear-gradient(90deg, var(--primary-purple), var(--primary-blue));
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Animaciones */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Tabla de Demostración de Tokens */
+        .clay-table-container {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--clay-card-shadow);
+            background: white;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-blue));
+            color: white;
+            padding: 12px 18px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 10px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.92rem;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Encabezado Superior -->
+    <header>
+        <div class="uneg-badge">
+            <div class="uneg-dot"></div>
+            <span>UNEG | Lenguajes y Compiladores - Tema 4</span>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal de Diapositivas -->
+    <main id="slider-main">
+
+        <!-- DIAPOSITIVA 1: PORTADA EXACTA Y FORMAL -->
+        <div class="slide active">
+            <!-- Membrete arriba y centrado con logo a la izquierda -->
+            <div class="portada-header">
+                <img src="data:image/png;base64,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" alt="Logo UNEG" class="portada-logo">
+                <h3>Universidad Nacional Experimental de Guayana<br>
+                    Vicerrectorado Académico<br>
+                    Coordinación General de Pregrado<br>
+                    Lenguajes y Compiladores</h3>
+            </div>
+
+            <!-- Título en el centro -->
+            <div class="portada-title-container">
+                <span class="clay-badge badge-purple">
+
+                    Evaluación Tema 4
+                </span>
+                <h1>Tema 4: Análisis Léxico</h1>
+                <p>(Autómatas Finitos y de Pila + Metacompiladores Flex)</p>
+            </div>
+
+            <!-- Profesor abajo a la izquierda y Autores abajo a la derecha -->
+            <div class="portada-footer">
+                <div class="portada-box-left">
+                    <h4>Profesor:</h4>
+                    <p>Msc. Félix Márquez</p>
+                </div>
+
+                <div class="portada-box-right">
+                    <h4>Integrantes:</h4>
+                    <p>Fernando Centeno<br>
+                        Juan Longart<br>
+                        Adrian Reina<br>
+                        Rafael Rodriguez</p>
+                </div>
+            </div>
+
+            <!-- Abajo en el centro -->
+            <div class="portada-date">
+                Ciudad Guayana, Julio de 2026
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 2: INTRODUCCIÓN AL ANÁLISIS LÉXICO -->
+        <div class="slide">
+            <div>
+                <h2>Fase Inicial del Compilador: El Analizador Léxico</h2>
+                <p class="slide-subtitle">La tokenización transforma un flujo continuo de caracteres en componentes léxicos estructurados.</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-purple" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        1. Entrada del Lexer
+                    </div>
+                    <p>Recibe una secuencia de caracteres pura (código fuente / string) exactamente como fue escrita por el programador.</p>
+                    <div class="clay-code" style="margin-top: 15px;">
+                        int contador = 10;<br>
+                        // Inicio del bucle
+                    </div>
+                </div>
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-blue" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        2. Proceso de Tokenización
+                    </div>
+                    <p>Escanea carácter por carácter, elimina comentarios e ignora espacios, tabulaciones y saltos de línea no semánticos.</p>
+                    <div style="display: flex; justify-content: center; align-items: center; margin: 25px 0; gap: 15px;">
+                        <svg class="svg-icon icon-purple" style="width: 38px; height: 38px;" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        <svg class="svg-icon icon-blue" style="width: 32px; height: 32px;" viewBox="0 0 24 24">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-emerald" viewBox="0 0 24 24">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                            <polyline points="2 17 12 22 22 17" />
+                            <polyline points="2 12 12 17 22 12" />
+                        </svg>
+                        3. Salida hacia el Parser
+                    </div>
+                    <p>Emite una secuencia ordenada de tuplas o <strong>Tokens</strong> listos para la validación gramatical:</p>
+                    <div class="clay-code">
+                        <span class="tok">TK_TYPE</span>: <span class="str">'int'</span><br>
+                        <span class="tok">TK_ID</span>: <span class="str">'contador'</span><br>
+                        <span class="tok">TK_ASSIGN</span>: <span class="str">'='</span><br>
+                        <span class="tok">TK_NUM</span>: <span class="num">10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 3: AUTÓMATAS DE PILA (ACT. 1) -->
+        <div class="slide">
+            <div>
+                <h2>Actividad 1: Autómatas de Pila vs. Autómatas Finitos</h2>
+                <p class="slide-subtitle">¿Por qué necesitamos una pila (LIFO) para superar los límites de los lenguajes regulares?</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-purple" viewBox="0 0 24 24">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                        </svg>
+                        Definición Formal del Autómata de Pila
+                    </div>
+                    <p>Un autómata de pila <b>M</b> se define rigurosamente como una tupla de 7 componentes:</p>
+                    <div class="clay-code" style="font-size: 1.05rem; text-align: center;">
+                        M = (Q, &Sigma;, &Gamma;, &delta;, q₀, Z₀, F)
+                    </div>
+                    <ul class="clay-list" style="margin-top: 12px;">
+                        <li><strong>Q:</strong> Conjunto finito de estados. | <strong>&Sigma;:</strong> Alfabeto de entrada.</li>
+                        <li><strong>&Gamma;:</strong> Alfabeto de la pila LIFO. | <strong>Z<sub>0</sub>:</strong> Símbolo inicial de pila.</li>
+                        <li><strong>&delta;:</strong> Función de transición (&delta;: Q &times; (&Sigma; &cup; {&epsilon;}) &times; &Gamma; &rarr; &#8487;(Q &times; &Gamma;<sup>*</sup>)).</li>
+                    </ul>
+                </div>
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-blue" viewBox="0 0 24 24">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                        </svg>
+                        Supremacía sobre el AFD (Jerarquía de Chomsky)
+                    </div>
+                    <ul class="clay-list">
+                        <li><strong>AFD / AFND (Tipo 3 - Regulares):</strong> Memoria finita fija. Son perfectos para el <em>Lexer</em>, pero no pueden contar anidamientos infinitos.</li>
+                        <li><strong>Autómata de Pila (Tipo 2 - Libres de Contexto):</strong> Puede emparejar paréntesis y verificar bloques de llaves apilando y desapilando.</li>
+                    </ul>
+                    <div class="clay-badge badge-green" style="margin-top: 10px;">
+                        <svg class="svg-icon icon-emerald" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        Ejemplo Clave: L = { a<sup>n</sup> b<sup>n</sup> | n &ge; 1 }
+                    </div>
+                    <p style="font-size: 0.95rem; margin-top: 6px;">Apila <b>'A'</b> por cada <b>'a'</b> y desapila por cada <b>'b'</b>, garantizando emparejamiento exacto.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 4: LEXER DOCKERFILE EN PYTHON (ACT. 2) -->
+        <div class="slide">
+            <div>
+                <h2>Actividad 2: Lexer para Archivos Dockerfile en Python</h2>
+                <p class="slide-subtitle">Construcción manual utilizando Expresiones Regulares del módulo <code class="inline-code">re</code> y generadores iterativos.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-purple" viewBox="0 0 24 24">
+                            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+                        </svg>
+                        Arquitectura y Expresiones Regulares
+                    </div>
+                    <p>El analizador (<code class="inline-code">dockerfile_lexer.py</code>) no requiere Docker instalado. Define una lista ordenada de tuplas con regex para evitar falsas coincidencias:</p>
+                    <div class="clay-code">
+                        DOCKER_TOKENS = [<br>
+                        &nbsp;&nbsp;(<span class="str">'COMMENT'</span>, <span class="str">r'^\s*#.*'</span>),<br>
+                        &nbsp;&nbsp;(<span class="str">'DIRECTIVE'</span>, <span class="str">r'\b(?:FROM|RUN|CMD|COPY|ENV|EXPOSE)\b'</span>),<br>
+                        &nbsp;&nbsp;(<span class="str">'FLAG'</span>, <span class="str">r'--[a-zA-Z0-9_-]+(?:=[a-zA-Z0-9_./:-]+)?'</span>),<br>
+                        &nbsp;&nbsp;(<span class="str">'VARIABLE'</span>, <span class="str">r'\$[a-zA-Z_]\w*|\$\{[^}]+\}'</span>),<br>
+                        &nbsp;&nbsp;(<span class="str">'PORT'</span>, <span class="str">r'\b\d{1,5}/(?:tcp|udp)\b'</span>),<br>
+                        &nbsp;&nbsp;(<span class="str">'MISMATCH'</span>, <span class="str">r'.'</span>) <span class="com"># Regla de captura de errores</span><br>
+                        ]
+                    </div>
+                </div>
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-blue" viewBox="0 0 24 24">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                        </svg>
+                        Eficiencia con <code class="inline-code">re.finditer</code> y Geometría
+                    </div>
+                    <p>En lugar de dividir la cadena lentamente con <code class="inline-code">.split()</code>, combinamos todos los patrones con alternancia y nombres de grupo: <code class="inline-code">(?P&lt;DIRECTIVE&gt;...)|(?P&lt;FLAG&gt;...)</code>.</p>
+                    <ul class="clay-list">
+                        <li><strong>Pasada única (O(n)):</strong> Escanea el archivo de principio a fin de forma continua.</li>
+                        <li><strong>Control de Línea y Columna:</strong> Al coincidir con <code class="inline-code">NEWLINE</code>, incrementa <code class="inline-code">line_num</code> y reinicia el desplazamiento <code class="inline-code">line_start</code>. Si coincide con <code class="inline-code">MISMATCH</code>, calcula la columna exacta y dispara un <code class="inline-code">SyntaxError</code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 5: DEMOSTRACIÓN DE DOCKERFILE -->
+        <div class="slide">
+            <div>
+                <h2>Demostración Práctica: Tokenización y Rechazo de Errores</h2>
+                <p class="slide-subtitle">Ejecución del script <code class="inline-code">run_dockerfile_lexer.py</code> sobre los 3 ejemplos entregados en el repositorio.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="clay-box" style="padding: 18px;">
+                    <div class="clay-box-title" style="font-size: 1.1rem;">
+                        <svg class="svg-icon icon-emerald" viewBox="0 0 24 24">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        Ejemplo 1 (Aceptado - Imagen Node.js)
+                    </div>
+                    <div class="clay-table-container">
+                        <table>
+                            <tr>
+                                <th>TIPO (TOKEN)</th>
+                                <th>LEXEMA (VALOR)</th>
+                                <th>LÍNEA</th>
+                                <th>COL</th>
+                            </tr>
+                            <tr>
+                                <td>DIRECTIVE</td>
+                                <td>FROM</td>
+                                <td>4</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>WORD</td>
+                                <td>node:18-alpine</td>
+                                <td>4</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td>DIRECTIVE</td>
+                                <td>EXPOSE</td>
+                                <td>20</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>PORT</td>
+                                <td>8080/tcp</td>
+                                <td>20</td>
+                                <td>8</td>
+                            </tr>
+                            <tr>
+                                <td>DIRECTIVE</td>
+                                <td>CMD</td>
+                                <td>23</td>
+                                <td>1</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <p style="margin-top: 12px; color: var(--accent-emerald); font-weight: 700;">ESTADO: ACEPTADO (36 tokens sin errores)</p>
+                </div>
+
+                <div class="clay-box" style="padding: 18px; border-color: #fca5a5;">
+                    <div class="clay-box-title" style="font-size: 1.1rem; color: #ef4444;">
+                        <svg class="svg-icon icon-red" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="15" y1="9" x2="9" y2="15" />
+                            <line x1="9" y1="9" x2="15" y2="15" />
+                        </svg>
+                        Ejemplo 3 (Rechazado - Símbolo Ilegal)
+                    </div>
+                    <p>El código contiene caracteres fuera del alfabeto Docker: <code class="inline-code">RUN pip install -r req.txt ¿¿error??</code></p>
+                    <div class="clay-code" style="background: #450a0a; border-color: #ef4444; color: #fecaca; margin-top: 10px;">
+                        [!] ERROR LÉXICO en línea 7, columna 28:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Carácter o secuencia no reconocida: '¿'<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Línea completa: >> RUN pip install ... ¿¿error_aqui?? <<
+                    </div>
+                    <p style="margin-top: 12px; color: #ef4444; font-weight: 700;">ESTADO: RECHAZADO INMEDIATAMENTE</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 6: METACOMPILADOR FLEX (ACT. 3) -->
+        <div class="slide">
+            <div>
+                <h2>Actividad 3: Metacompilador Flex (Fast Lexical Generator)</h2>
+                <p class="slide-subtitle">Automatización industrial: generar un autómata determinístico en C (<code class="inline-code">lex.yy.c</code>) desde reglas <code class="inline-code">.l</code>.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-purple" viewBox="0 0 24 24">
+                            <polyline points="16 18 22 12 16 6" />
+                            <polyline points="8 6 2 12 8 18" />
+                        </svg>
+                        Estructura en 3 Secciones de un Archivo .l
+                    </div>
+                    <div class="clay-code">
+                        %{<br>
+                        &nbsp;&nbsp;<span class="com">/* 1. SECCIÓN DE DEFINICIONES EN C */</span><br>
+                        &nbsp;&nbsp;#include &lt;stdio.h&gt;<br>
+                        &nbsp;&nbsp;int line_num = 1, col_num = 1;<br>
+                        %}<br>
+                        %option noyywrap yylineno<br>
+                        DIGITO [0-9]<br>
+                        %%<br>
+                        <span class="com">/* 2. SECCIÓN DE REGLAS Y ACCIONES */</span><br>
+                        "fn" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ printf("TK_FN: %s\n", yytext); }<br>
+                        {DIGITO}+ { printf("TK_INT: %s\n", yytext); }<br>
+                        . &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ printf("ERROR_LEXICO: %s\n", yytext); }<br>
+                        %%<br>
+                        <span class="com">/* 3. CÓDIGO C DE USUARIO (MAIN / YYLEX) */</span><br>
+                        int main() { yylex(); return 0; }
+                    </div>
+                </div>
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-blue" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                        Elementos Internos de Flex
+                    </div>
+                    <ul class="clay-list">
+                        <li><strong><code class="inline-code">yytext</code>:</strong> Puntero a la cadena exacta que acaba de coincidir con el patrón.</li>
+                        <li><strong><code class="inline-code">yyleng</code>:</strong> Longitud en caracteres del lexema capturado en <code class="inline-code">yytext</code>.</li>
+                        <li><strong><code class="inline-code">yylex()</code>:</strong> Función autogenerada por Flex que inicia el bucle de lectura sobre <code class="inline-code">yyin</code>.</li>
+                    </ul>
+                    <div class="clay-badge badge-purple" style="margin-top: 12px;">Regla del Longest Match</div>
+                    <p style="font-size: 0.95rem; margin-top: 6px;">Si una cadena puede coincidir con dos reglas, Flex elige <strong>la coincidencia más larga</strong> o, a igual longitud, <strong>la que fue escrita primero</strong> en el archivo.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 7: LENGUAJE MINIRUST -->
+        <div class="slide">
+            <div>
+                <h2>Diseño de MiniRust: Subconjunto de Lenguaje Rust</h2>
+                <p class="slide-subtitle">Especificación léxica de tipos, palabras clave y operadores implementados en <code class="inline-code">rust_lexer.l</code>.</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-purple" viewBox="0 0 24 24">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                        </svg>
+                        Palabras Clave y Tipos
+                    </div>
+                    <ul class="clay-list">
+                        <li><strong>Keywords:</strong> <code class="inline-code">fn</code>, <code class="inline-code">let</code>, <code class="inline-code">mut</code>, <code class="inline-code">if</code>, <code class="inline-code">else</code>, <code class="inline-code">while</code>, <code class="inline-code">for</code>, <code class="inline-code">in</code>, <code class="inline-code">return</code>, <code class="inline-code">true</code>, <code class="inline-code">false</code>, <code class="inline-code">println!</code></li>
+                        <li><strong>Tipos Soportados:</strong> <code class="inline-code">i32</code>, <code class="inline-code">f64</code>, <code class="inline-code">bool</code>, <code class="inline-code">char</code>, <code class="inline-code">String</code></li>
+                    </ul>
+                    <div class="clay-badge badge-blue" style="margin-top: 8px;">Declaración let / mut</div>
+                </div>
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-blue" viewBox="0 0 24 24">
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
+                        Operadores y Símbolos
+                    </div>
+                    <ul class="clay-list">
+                        <li><strong>Relacionales:</strong> <code class="inline-code">==</code>, <code class="inline-code">!=</code>, <code class="inline-code">&lt;=</code>, <code class="inline-code">&gt;=</code>, <code class="inline-code">&lt;</code>, <code class="inline-code">&gt;</code></li>
+                        <li><strong>Lógicos y Flechas:</strong> <code class="inline-code">&amp;&amp;</code>, <code class="inline-code">||</code>, <code class="inline-code">-&gt;</code>, <code class="inline-code">..</code>, <code class="inline-code">+=</code>, <code class="inline-code">-=</code></li>
+                        <li><strong>Delimitadores:</strong> <code class="inline-code">(</code>, <code class="inline-code">)</code>, <code class="inline-code">{</code>, <code class="inline-code">}</code>, <code class="inline-code">[</code>, <code class="inline-code">]</code>, <code class="inline-code">:</code>, <code class="inline-code">;</code>, <code class="inline-code">,</code></li>
+                    </ul>
+                </div>
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-emerald" viewBox="0 0 24 24">
+                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <path d="m10 13-2 2 2 2" />
+                            <path d="m14 17 2-2-2-2" />
+                        </svg>
+                        Pruebas y Emulador Python
+                    </div>
+                    <ul class="clay-list">
+                        <li>Entregamos <code class="inline-code">ejemplo_rust1.rs</code> (Cálculo factorial) y <code class="inline-code">ejemplo_rust2_errores.rs</code>.</li>
+                        <li>Además del C autogenerado, creamos <code class="inline-code">rust_lexer_py.py</code> para verificar MiniRust directamente sin necesidad de GCC.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 8: FLEX EN SEGURIDAD INFORMÁTICA (ACT. 4) -->
+        <div class="slide">
+            <div>
+                <h2>Actividad 4: Flex en el Área de Seguridad Informática</h2>
+                <p class="slide-subtitle">¿Por qué los cortafuegos ultrarrápidos e IDS/IPS mundiales utilizan analizadores léxicos en C?</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-purple" viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        1. IDS/IPS (Snort &amp; Suricata)
+                    </div>
+                    <p>Inspeccionan tráfico a 100 Gbps. El motor tokeniza cabeceras IP/TCP y opciones (<code class="inline-code">content:"|00 01|"; sid:10001</code>) a velocidad lineal O(n) sin causar latencia de red.</p>
+                    <div class="clay-badge badge-pink" style="margin-top: 10px;">Detección de Intrusos</div>
+                </div>
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-amber" viewBox="0 0 24 24">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                        2. Reglas YARA (Malware)
+                    </div>
+                    <p>YARA (<code class="inline-code">libyara</code>) es el estándar forense. Utiliza internamente <strong>Flex y Bison</strong> para compilar las reglas del analista (<code class="inline-code">rule</code>, <code class="inline-code">meta:</code>, <code class="inline-code">strings:</code>, <code class="inline-code">condition:</code>) en memoria.</p>
+                    <div class="clay-badge badge-amber" style="margin-top: 10px;">Adjunto: yara_lexer_demo.l</div>
+                </div>
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-blue" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
+                        3. WAF (ModSecurity)
+                    </div>
+                    <p>Tokeniza peticiones HTTP, cabeceras y parámetros para detectar gramáticas maliciosas de inyección SQL (<code class="inline-code">SQLi</code>) o Cross-Site Scripting (<code class="inline-code">XSS</code>) al vuelo.</p>
+                    <div class="clay-badge badge-purple" style="margin-top: 10px;">Firewall Web</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAPOSITIVA 9: CONCLUSIONES -->
+        <div class="slide">
+            <div>
+                <h2>Conclusiones Generales y Entrega en Repositorio</h2>
+                <p class="slide-subtitle">Síntesis académica del Tema 4: Desde la teoría de máquinas abstractas al software ejecutable.</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="clay-box">
+                    <div class="clay-box-title">
+                        <svg class="svg-icon icon-purple" viewBox="0 0 24 24">
+                            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+                        </svg>
+                        Conclusiones Clave del Equipo
+                    </div>
+                    <ul class="clay-list" style="line-height: 1.8;">
+                        <li><strong>Purificación del Código:</strong> El Lexer simplifica el trabajo al Parser al filtrar comentarios (<code class="inline-code">SKIP</code>) y agrupar bytes en lexemas válidos.</li>
+                        <li><strong>AFD vs. PDA:</strong> El autómata finito es insuperable para tokenizar a velocidad O(n), mientras que la pila del PDA es imprescindible para la sintaxis.</li>
+                        <li><strong>Manual vs. Metacompilador:</strong> El desarrollo en Python da personalización en mensajes de error; Flex aporta estandarización y rendimiento en C.</li>
+                    </ul>
+                </div>
+                <div class="clay-box" style="text-align: center; justify-content: center; background: linear-gradient(135deg, #ede9fe, #e0f2fe);">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 18px;">
+                        <svg class="svg-icon icon-purple" style="width: 54px; height: 54px;" viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="7" />
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                        </svg>
+                        <svg class="svg-icon icon-blue" style="width: 54px; height: 54px;" viewBox="0 0 24 24">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.85rem; color: var(--primary-purple); margin-bottom: 12px;">¡Gracias por su atención!</h3>
+                    <p style="font-size: 1.1rem; color: var(--text-main);">Todo el código, ejemplos y documentación (<code class="inline-code">INFORME_TEMA4.md</code>) están listos en nuestro repositorio del <strong>Tema 4</strong>.</p>
+                    <div style="margin-top: 22px;">
+                        <span class="clay-badge badge-purple">Universidad Nacional Experimental de Guayana</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Controles de Navegación Inferior -->
+    <footer>
+        <div class="slide-counter" id="slide-counter">Diapositiva 1 / 9</div>
+        <div class="dots-container" id="dots-container"></div>
+        <div class="nav-buttons">
+            <button class="clay-btn" id="prev-btn" onclick="changeSlide(-1)">
+                <svg class="svg-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+                Anterior
+            </button>
+            <button class="clay-btn clay-btn-primary" id="next-btn" onclick="changeSlide(1)">
+                Siguiente
+                <svg class="svg-icon" style="width: 18px; height: 18px;" viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6" />
+                </svg>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Controlador Lógico de Diapositivas (JavaScript limpio sin speaker badge) -->
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const counterEl = document.getElementById('slide-counter');
+        const dotsContainer = document.getElementById('dots-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // Inicializar Puntos (Dots)
+        slides.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = `dot ${i === 0 ? 'active' : ''}`;
+            dot.onclick = () => goToSlide(i);
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.dot');
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+
+            // Actualizar contador
+            counterEl.textContent = `Diapositiva ${currentSlide + 1} / ${slides.length}`;
+
+            // Deshabilitar botones si estamos en el extremo
+            prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
+            prevBtn.style.pointerEvents = currentSlide === 0 ? 'none' : 'all';
+            nextBtn.style.opacity = currentSlide === slides.length - 1 ? '0.5' : '1';
+            nextBtn.style.pointerEvents = currentSlide === slides.length - 1 ? 'none' : 'all';
+        }
+
+        function changeSlide(direction) {
+            const nextIndex = currentSlide + direction;
+            if (nextIndex >= 0 && nextIndex < slides.length) {
+                currentSlide = nextIndex;
+                updateSlides();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlides();
+        }
+
+        // Navegación con Teclas de Flecha del Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            }
+        });
+
+        // Carga inicial
+        updateSlides();
+    </script>
+</body>
+
+</html>
