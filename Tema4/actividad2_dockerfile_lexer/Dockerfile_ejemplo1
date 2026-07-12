@@ -1,0 +1,28 @@
+# Archivo Dockerfile de Ejemplo 1: Aplicación Web Node.js
+# Demuestra el uso de directivas básicas, comentarios, variables y puertos
+
+FROM node:18-alpine
+LABEL maintainer="fmarquez@e.uneg.edu.ve"
+LABEL version="1.0.0"
+
+# Configuración de variables de entorno
+ENV NODE_ENV=production
+ENV PORT=8080
+
+# Creación y asignación del directorio de trabajo
+WORKDIR /usr/src/app
+
+# Copiar archivos de dependencias del proyecto
+COPY package.json package-lock.json ./
+
+# Instalación de dependencias de producción
+RUN npm ci --only=production && npm cache clean --force
+
+# Copiar el código fuente de la aplicación
+COPY . .
+
+# Exponer el puerto de la aplicación
+EXPOSE 8080/tcp
+
+# Comando de inicio del contenedor
+CMD ["node", "server.js"]

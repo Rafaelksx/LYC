@@ -1,0 +1,12 @@
+# Archivo Dockerfile de Ejemplo 3: Demostración de Detección de Errores Léxicos
+# Contiene directivas válidas pero introduce un símbolo ilegal no perteneciente al lenguaje Dockerfile
+
+FROM python:3.11-slim
+WORKDIR /app
+
+# Símbolos no permitidos que dispararán un ERROR LÉXICO (ej: ¿ y ¡)
+COPY ./requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt ¿¿error_aqui?? ¡símbolos_inválidos!
+
+EXPOSE 5000/tcp
+CMD ["python", "app.py"]
