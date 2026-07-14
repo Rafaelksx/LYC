@@ -6,6 +6,7 @@
 * **Profesor:** Msc. Félix Márquez (`fmarquez@e.uneg.edu.ve`)
 * **Integrantes del Equipo:** Fernando Centeno, Juan Longart, Adrian Reina y Rafael Rodriguez
 * **Ciudad Guayana, Julio de 2026** — Período Lectivo 2026-I
+* **Link del video de la defensa:** https://youtu.be/TYfhOPVgAXI
 
 ---
 
