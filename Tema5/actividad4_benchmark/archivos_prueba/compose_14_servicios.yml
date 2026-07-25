@@ -1,0 +1,158 @@
+version: '3.8'
+
+services:
+  servicio_01:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - "10038:80"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=1
+      - LOG_LEVEL=info
+
+  servicio_02:
+    image: node:18-alpine
+    restart: unless-stopped
+    ports:
+      - "10189:443"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=2
+      - LOG_LEVEL=info
+
+  servicio_03:
+    image: python:3.11-slim
+    restart: unless-stopped
+    ports:
+      - "10298:3000"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=3
+      - LOG_LEVEL=info
+
+  servicio_04:
+    image: postgres:15
+    restart: unless-stopped
+    ports:
+      - "10337:3306"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=4
+      - LOG_LEVEL=info
+    depends_on:
+      - servicio_02
+
+  servicio_05:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "10401:5432"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=5
+      - LOG_LEVEL=info
+
+  servicio_06:
+    image: mongo:6
+    restart: unless-stopped
+    ports:
+      - "10575:5672"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=6
+      - LOG_LEVEL=info
+
+  servicio_07:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - "10682:6379"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=7
+      - LOG_LEVEL=info
+    depends_on:
+      - servicio_05
+
+  servicio_08:
+    image: elasticsearch:8.5.0
+    restart: unless-stopped
+    ports:
+      - "10746:8080"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=8
+      - LOG_LEVEL=info
+
+  servicio_09:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    ports:
+      - "10871:8443"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=9
+      - LOG_LEVEL=info
+
+  servicio_10:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    ports:
+      - "10922:9000"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=10
+      - LOG_LEVEL=info
+    depends_on:
+      - servicio_08
+
+  servicio_11:
+    image: mysql:8.0
+    restart: unless-stopped
+    ports:
+      - "11031:9090"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=11
+      - LOG_LEVEL=info
+
+  servicio_12:
+    image: traefik:v2.10
+    restart: unless-stopped
+    ports:
+      - "11130:9200"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=12
+      - LOG_LEVEL=info
+
+  servicio_13:
+    image: minio/minio:latest
+    restart: unless-stopped
+    ports:
+      - "11265:15672"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=13
+      - LOG_LEVEL=info
+    depends_on:
+      - servicio_11
+
+  servicio_14:
+    image: vault:latest
+    restart: unless-stopped
+    ports:
+      - "11343:27017"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=14
+      - LOG_LEVEL=info
+
+networks:
+  red_principal:
+    driver: bridge
+
+volumes:
+  datos_persistentes:
+    driver: local

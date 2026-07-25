@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  servicio_01:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - "10007:80"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=1
+      - LOG_LEVEL=info
+
+  servicio_02:
+    image: node:18-alpine
+    restart: unless-stopped
+    ports:
+      - "10145:443"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=2
+      - LOG_LEVEL=info
+
+  servicio_03:
+    image: python:3.11-slim
+    restart: unless-stopped
+    ports:
+      - "10253:3000"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=3
+      - LOG_LEVEL=info
+
+  servicio_04:
+    image: postgres:15
+    restart: unless-stopped
+    ports:
+      - "10331:3306"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=4
+      - LOG_LEVEL=info
+    depends_on:
+      - servicio_02
+
+  servicio_05:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "10459:5432"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=5
+      - LOG_LEVEL=info
+
+  servicio_06:
+    image: mongo:6
+    restart: unless-stopped
+    ports:
+      - "10546:5672"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=6
+      - LOG_LEVEL=info
+
+  servicio_07:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - "10620:6379"
+    environment:
+      - APP_ENV=production
+      - SERVICE_ID=7
+      - LOG_LEVEL=info
+    depends_on:
+      - servicio_05
+
+networks:
+  red_principal:
+    driver: bridge
+
+volumes:
+  datos_persistentes:
+    driver: local
