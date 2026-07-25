@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensa Tema 5 - Análisis Sintáctico</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0f172a; /* Slate 900 */
+            --bg-surface: #1e293b; /* Slate 800 */
+            --bg-surface-light: #334155; /* Slate 700 */
+            --text-main: #f8fafc; /* Slate 50 */
+            --text-muted: #94a3b8; /* Slate 400 */
+            --accent-primary: #38bdf8; /* Indigo/Blue */
+            --accent-secondary: #c084fc; /* Purple */
+            --accent-tertiary: #10b981; /* Emerald */
+            --danger: #ef4444; /* Red */
+            --gradient-text: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(192, 132, 252, 0.08), transparent 25%);
+        }
+
+        /* Contenedor Principal */
+        .presentation {
+            width: 90vw;
+            max-width: 1400px;
+            height: 85vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: scale(0.98);
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-surface);
+            border-radius: var(--radius);
+            padding: 3rem 4rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        /* Portada Especial - Estilo Tema 4 pero Dark */
+        .slide-cover {
+            justify-content: space-between;
+            align-items: stretch;
+            background: linear-gradient(145deg, var(--bg-surface), #111827);
+        }
+
+        .portada-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .portada-logo {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .portada-header h3 {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.6;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .portada-title-container {
+            text-align: center;
+            margin: auto 0;
+        }
+
+        .title-main {
+            font-size: 4.5rem;
+            font-weight: 800;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--text-muted);
+        }
+
+        .portada-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1rem;
+        }
+
+        .portada-box-left h4, .portada-box-right h4 {
+            color: var(--accent-primary);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .portada-box-left p, .portada-box-right p {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .portada-box-right p {
+            text-align: right;
+        }
+
+        .portada-date {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1rem;
+        }
+
+        /* Layout Diapositivas de Contenido */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .tag {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slide-body {
+            display: flex;
+            gap: 3rem;
+            flex-grow: 1;
+        }
+
+        .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        /* Componentes Visuales */
+        .card {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            color: var(--accent-secondary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Código (Fira Code) */
+        .code-block {
+            font-family: 'Fira Code', monospace;
+            background: #000;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-size: 1rem;
+            color: #e2e8f0;
+            overflow-x: auto;
+            border: 1px solid #334155;
+            line-height: 1.5;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .keyword { color: #f472b6; } /* Pink */
+        .function { color: #38bdf8; } /* Blue */
+        .string { color: #a3e635; } /* Green */
+        .comment { color: #64748b; font-style: italic; }
+        .number { color: #facc15; } /* Yellow */
+
+        /* SVGs en vez de emojis */
+        .icon-svg {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+            fill: currentColor;
+        }
+
+        .text-success { color: var(--accent-tertiary); }
+        .text-ai { color: var(--accent-primary); }
+
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        th {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Controles de Navegación */
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-main);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn:hover {
+            background: var(--accent-primary);
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        /* Barra de Progreso */
+        .progress-wrapper {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-text);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Utilidades */
+        .highlight { color: var(--accent-primary); font-weight: 600; }
+        .text-center { text-align: center; }
+        .mt-2 { margin-top: 2rem; }
+    </style>
+</head>
+<body>
+
+    <div class="presentation" id="presentation">
+        
+        <!-- 1. PORTADA -->
+        <div class="slide slide-cover active">
+            <!-- Membrete arriba y centrado con logo a la izquierda -->
+            <div class="portada-header">
+                <img src="data:image/png;base64,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" alt="Logo UNEG" class="portada-logo">
+                <h3>Universidad Nacional Experimental de Guayana<br>
+                    Vicerrectorado Académico<br>
+                    Coordinación General de Pregrado<br>
+                    Lenguajes y Compiladores</h3>
+            </div>
+            
+            <!-- Título en el centro -->
+            <div class="portada-title-container">
+                <span style="background: rgba(192, 132, 252, 0.1); color: var(--accent-secondary); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">
+                    Evaluación Tema 5
+                </span>
+                <h1 class="title-main" style="margin-top: 1rem;">Tema 5: Análisis Sintáctico</h1>
+                <p class="subtitle">(Parsers Teóricos, Experimentación y Motores Híbridos)</p>
+            </div>
+            
+            <!-- Profesor y Autores -->
+            <div class="portada-footer">
+                <div class="portada-box-left">
+                    <h4>Profesor:</h4>
+                    <p>Ing. Félix Márquez</p>
+                </div>
+
+                <div class="portada-box-right">
+                    <h4>Integrantes:</h4>
+                    <p>Fernando Centeno (Fer401)<br>
+                        Juan Longart (lll24)<br>
+                        Adrian Reina (Adrekly)<br>
+                        Rafael Rodriguez (Rafaelksx)</p>
+                </div>
+            </div>
+            <div class="portada-date">
+                Ciudad Guayana, Julio 2026
+            </div>
+        </div>
+
+        <!-- 2. INTRODUCCIÓN -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>El Analizador Sintáctico (Parser)</h2>
+                <span class="tag">Introducción</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <p>El análisis sintáctico es la segunda fase del proceso de compilación. Recibe la secuencia de tokens generada por el lexer y comprueba si esta secuencia es válida según una <span class="highlight">Gramática Libre de Contexto (GLC)</span>.</p>
+                    <div class="card">
+                        <h3>Funciones Principales</h3>
+                        <ul>
+                            <li>Validar la estructura gramatical del código fuente.</li>
+                            <li>Informar sobre errores de sintaxis de manera precisa.</li>
+                            <li>Construir el Árbol de Sintaxis Abstracta (AST) para fases posteriores.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col" style="justify-content: center; align-items: center;">
+                    <div class="code-block" style="text-align: center; padding: 3rem;">
+                        <span class="keyword">Lexer</span> ➜ [ Tokens ] ➜ <span class="function">Parser</span><br><br>
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 20l8-8h-5V4H9v8H4z"/></svg><br><br>
+                        [ Árbol AST ] ➜ <span class="keyword">Analizador Semántico</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. AST CONCEPTO -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Árbol de Sintaxis Abstracta (AST)</h2>
+                <span class="tag">Estructuras de Datos</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <p>Una representación jerárquica del código fuente que elimina los "ruidos" sintácticos (como paréntesis o llaves) para enfocarse puramente en la <span class="highlight">semántica computacional</span>.</p>
+                    <ul>
+                        <li><strong>Menor tamaño:</strong> Desecha tokens irrelevantes para la ejecución.</li>
+                        <li><strong>Abstracción:</strong> Facilita el análisis sin importar la verbosidad del lenguaje.</li>
+                        <li><strong>Optimizaciones:</strong> Permite realizar <em>Plegado de Constantes</em> o eliminación de <em>Código Muerto</em> directamente en la memoria.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. AST EJEMPLO -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>AST en Acción</h2>
+                <span class="tag">Ejemplo Visual</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <p>Veamos cómo un Parser procesa una expresión aritmética básica y la convierte en un árbol, ignorando los paréntesis de agrupación.</p>
+                    <div class="code-block" style="margin-top: 2rem;">
+                        <span class="comment">// Código fuente original</span><br>
+                        <span class="keyword">let</span> resultado <span class="keyword">=</span> (<span class="number">3</span> <span class="function">+</span> <span class="number">5</span>) <span class="function">*</span> <span class="number">2</span>;
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="code-block" style="height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <pre style="margin: 0; text-align: left;">
+[Asignacion] 'resultado'
+  └── [BinOp] '*'
+       ├── [BinOp] '+'
+       │    ├── [Entero] 3
+       │    └── [Entero] 5
+       └── [Entero] 2
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. ENFOQUE LL -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Análisis LL (Descendente)</h2>
+                <span class="tag">Top-Down Parsing</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <div class="card">
+                        <h3>Características</h3>
+                        <p>Lee la entrada de izquierda a derecha (<strong>L</strong>eft-to-right) y produce la derivación más a la izquierda (<strong>L</strong>eftmost).</p>
+                        <ul>
+                            <li>Comienza en el símbolo inicial (la raíz) y "baja" hacia las hojas.</li>
+                            <li>Ideal para ser codificado manualmente (<strong>Recursivo Descendente</strong>).</li>
+                            <li>Emite mensajes de error excelentes y predecibles.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card" style="border-color: var(--danger);">
+                        <h3 style="color: var(--danger);">Desventaja Crítica</h3>
+                        <p>No puede manejar gramáticas con <span class="highlight">recursión a la izquierda</span> (ej. `E -> E + T`). Si se intenta, el parser cae en un bucle infinito. Requiere re-escribir (factorizar) la gramática.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. ENFOQUE LR -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Análisis LR (Ascendente)</h2>
+                <span class="tag">Bottom-Up Parsing</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <div class="card">
+                        <h3>Características</h3>
+                        <p>Lee de izquierda a derecha pero produce la derivación más a la derecha en reversa (<strong>R</strong>ightmost). Utiliza un enfoque <strong>Shift-Reduce</strong> (Desplazar y Reducir).</p>
+                        <ul>
+                            <li>Comienza en las hojas (tokens) y sube colapsándolos hasta la raíz.</li>
+                            <li>Es inmensamente poderoso; soporta recursión izquierda sin problema.</li>
+                            <li>Acepta el mayor subconjunto de lenguajes determinísticos.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card" style="border-color: var(--danger);">
+                        <h3 style="color: var(--danger);">Desventaja Crítica</h3>
+                        <p>Es prácticamente imposible codificarlo a mano. Requiere la construcción de tablas de estados de transición gigantescas. Se depende obligatoriamente de herramientas automáticas (Generadores).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. COMPARATIVA LL VS LR -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Comparativa Directa</h2>
+                <span class="tag">LL vs LR</span>
+            </div>
+            <div class="slide-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>LL (Descendente)</th>
+                            <th>LR (Ascendente)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Construcción</strong></td>
+                            <td>Raíz a Hojas (Top-Down)</td>
+                            <td>Hojas a Raíz (Bottom-Up)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recursión Izquierda</strong></td>
+                            <td style="color: var(--danger);">No permitida</td>
+                            <td style="color: var(--accent-tertiary);">Soportada naturalmente</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Codificación Manual</strong></td>
+                            <td style="color: var(--accent-tertiary);">Muy Fácil (Recursiva)</td>
+                            <td style="color: var(--danger);">Casi Imposible (Requiere Tablas)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mensajes de Error</strong></td>
+                            <td>Claros y Contextualizados</td>
+                            <td>A veces genéricos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Herramientas</strong></td>
+                            <td>ANTLR, Parsers propios</td>
+                            <td>Yacc, Bison, CUP</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 8. METACOMPILADORES -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Generadores de Parsers</h2>
+                <span class="tag">Metacompiladores</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <p>Son programas que leen un archivo con reglas gramaticales (Notación BNF) y escriben automáticamente el código fuente en C, Java o Python del Parser.</p>
+                    <div class="card">
+                        <h3>Bison / Yacc</h3>
+                        <p>Generadores LALR(1) ascendentes. Son estándar en sistemas UNIX y están detrás de herramientas enormes como Bash y GCC (históricamente).</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card mt-2">
+                        <h3>ANTLR 4</h3>
+                        <p>Generador moderno de parsers LL(*). Muy utilizado hoy en día por soportar múltiples lenguajes de salida (Python, C#, JS) y generar automáticamente el patrón Visitor para recorrer el AST.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. RECUPERACION DE ERRORES -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Recuperación de Errores Sintácticos</h2>
+                <span class="tag">Técnicas</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <p>Un compilador moderno no muere en el primer error. Trata de recuperarse para mostrar todos los errores posibles al programador de una sola vez.</p>
+                    <ul>
+                        <li><strong>Modo Pánico:</strong> Descarta tokens silenciosamente hasta encontrar un "salvavidas" (como un `;` o `}`).</li>
+                        <li><strong>Inserción Ficticia:</strong> Si olvidas cerrar una llave `}`, el parser la inserta virtualmente para continuar analizando el resto del bloque.</li>
+                        <li><strong>Producciones de Error:</strong> Reglas específicas creadas por el diseñador para manejar fallos típicos (ej. asignar un error si se usa `=` en lugar de `==` en un `if`).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. ACTIVIDAD 4 - BENCHMARK -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Desafío: Experimento de Carga</h2>
+                <span class="tag">Actividad 4</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <p>Se nos retó a construir un Lexer/Parser para archivos <code>docker-compose.yml</code> y medir sus tiempos.</p>
+                    <div class="card">
+                        <h3>Metodología</h3>
+                        <ul>
+                            <li>Parsers implementados manualmente en 3 lenguajes: <strong>Python, Node.js y Bash Shell</strong>.</li>
+                            <li>Enfoque LL(1) Recursivo Descendente.</li>
+                            <li>Generación automática de archivos con $N=5$ hasta $N=20$ contenedores.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="code-block">
+                        <span class="comment"># Output del generador de Benchmark</span><br>
+                        <span class="keyword">Generando</span> 16 archivos de prueba...<br><br>
+                        <span class="keyword">Evaluando</span> Parser Python...<br>
+                        [N=10] Tiempo: 0.52 ms | <span class="text-success">[ACEPTADO]</span><br>
+                        [N=20] Tiempo: 0.97 ms | <span class="text-success">[ACEPTADO]</span><br><br>
+                        <span class="keyword">Evaluando</span> Parser Node.js...<br>
+                        [N=10] Tiempo: 56.68 ms | <span class="text-success">[ACEPTADO]</span><br>
+                        [N=20] Tiempo: 59.86 ms | <span class="text-success">[ACEPTADO]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. ANALISIS DEL BENCHMARK -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Análisis del Benchmark</h2>
+                <span class="tag">Resultados</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <div class="card" style="height: 100%;">
+                        <h3>Conclusiones Teóricas Comprobadas</h3>
+                        <p>Los datos confirman que nuestro parser tiene una <strong>complejidad temporal O(n) estrictamente lineal</strong>, procesando tokens a una velocidad constante.</p>
+                        <p class="mt-2"><strong>Python vs Node.js:</strong> En pruebas cortas (scripts CLI), Python venció a Node.js de forma aplastante (0.9ms vs 60ms). Esto se debe al gigantesco <em>overhead</em> de arranque del motor V8 de Javascript, que toma tiempo valioso en inicializar su contexto global, ofuscando el tiempo real de parseo sintáctico.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12. ACTIVIDAD 5 - UNEGSCRIPT -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Asistente Híbrido "UnegScript"</h2>
+                <span class="tag">Actividad 5</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <p>Ante la dependencia actual de IAs predictivas (Copilot) que atrofian la memoria sintáctica, desarrollamos un Lexer/Parser que <span class="highlight">enseña en lugar de autocompletar</span> ciegamente.</p>
+                    <div class="card">
+                        <h3>Flujo Híbrido:</h3>
+                        <ol>
+                            <li>El Lexer tradicional tokeniza el código.</li>
+                            <li>Si un identificador es extraño, calcula la <strong>Distancia de Levenshtein</strong> contra palabras clave válidas.</li>
+                            <li>Si el parecido está entre 62% y 85%, invoca un Mock-LLM de Fallback.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 13. DEMO UNEGSCRIPT -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Fallback IA en Acción</h2>
+                <span class="tag">Demostración en Consola</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <p>Ejemplo con errores tipográficos introducidos:</p>
+                    <div class="code-block" style="margin-bottom: 1rem;">
+                        <span class="keyword">whlie</span> x > <span class="number">0</span>:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="function">pront</span>(x)<br>
+                        <span class="keyword">retrun</span> True
+                    </div>
+                </div>
+                <div class="col">
+                    <p>Respuesta del Parser Híbrido:</p>
+                    <div class="code-block" style="font-size: 0.9rem;">
+                        <span class="text-ai"><strong>[MOCK-LLM]</strong></span> La palabra clave es 'while'<br>
+                        &nbsp;&nbsp;&nbsp;(Confianza Levenshtein: 80%)<br><br>
+                        <span class="text-ai"><strong>[MOCK-LLM]</strong></span> La función de impresión es 'print'<br>
+                        &nbsp;&nbsp;&nbsp;(Confianza Levenshtein: 80%)<br><br>
+                        <span class="text-ai"><strong>[MOCK-LLM]</strong></span> La palabra clave es 'return'<br><br>
+                        <span class="text-success"><strong>[EXITO]</strong> Estado final: ACEPTADO</span><br>
+                        (El Parser corrigió el AST en vivo sin morir por el Panic Mode).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 14. CONCLUSIONES -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Conclusiones Generales</h2>
+                <span class="tag">Cierre</span>
+            </div>
+            <div class="slide-body">
+                <div class="col">
+                    <ul>
+                        <li>La fase sintáctica es el eje donde el texto plano se convierte en lógica estructural. Sin un AST limpio, es imposible compilar o ejecutar código óptimamente.</li>
+                        <li>Las técnicas LL y LR, pese a tener más de 50 años, siguen dictando las reglas de los compiladores e IDEs más potentes del mundo actual.</li>
+                        <li><strong>Innovación:</strong> Acoplar heurísticas de IA (como Levenshtein o Fallback LLM) al análisis léxico clásico abre una nueva era de herramientas educativas que guían al programador, combinando el rigor matemático de los Autómatas con la flexibilidad humana.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Barra de progreso y botones -->
+    <div class="progress-wrapper">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div class="controls">
+        <button class="btn" id="prevBtn" onclick="prevSlide()">
+            <svg class="icon-svg" style="margin:0;" viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg>
+        </button>
+        <button class="btn" id="nextBtn" onclick="nextSlide()">
+            <svg class="icon-svg" style="margin:0;" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            // Actualizar barra de progreso
+            progressBar.style.width = ((currentSlide + 1) / totalSlides) * 100 + '%';
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlides();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        }
+
+        // Navegación por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+        
+        // Inicializar
+        updateSlides();
+    </script>
+</body>
+</html>
